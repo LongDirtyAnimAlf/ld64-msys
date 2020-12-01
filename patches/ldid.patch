@@ -1,0 +1,38 @@
+--- ldid.cpp	Sun Nov 29 09:22:11 2020
++++ ldid.cpp	Sun Nov 29 08:58:18 2020
+@@ -2164,7 +2164,7 @@
+             Commit(commit.first, commit.second);
+ }
+ 
+-#ifndef __WIN32__
++#if !defined(__WIN32__) && !defined(__CYGWIN__)
+ std::string readlink(const std::string &path) {
+     for (size_t size(1024); ; size *= 2) {
+         std::string data;
+--- Makefile	Sun Nov 29 09:22:11 2020
++++ Makefile	Sun Nov 29 09:14:58 2020
+@@ -3,6 +3,7 @@
+ INCLUDES += -isystem libplist/src
+ INCLUDES += -isystem libplist/libcnary/include
+ INCLUDES += -isystem libplist/include
++INCLUDES += -isystem $(INSTALLPREFIX)/include
+ 
+ CFLAGS += -O2 -fPIC
+ CFLAGS += $(INCLUDES)
+@@ -10,6 +11,7 @@
+ CFLAGS += -Wno-strict-aliasing
+ 
+ CXXFLAGS += -O2 -fPIC
++CXXFLAGS += -std=gnu++11
+ CXXFLAGS += $(INCLUDES)
+ CXXFLAGS += -Wall
+ CXXFLAGS += -Wno-sign-compare
+@@ -28,7 +30,7 @@
+ LDID_OBJS += libplist/src/hashtable.o
+ LDID_OBJS += ldid.cpp.o lookup2.c.o
+ 
+-LDFLAGS = -lcrypto -pthread
++LDFLAGS = -L$(INSTALLPREFIX)/lib -lcrypto -lmman -lregex -pthread
+ 
+ .PHONY: all clean
+ 

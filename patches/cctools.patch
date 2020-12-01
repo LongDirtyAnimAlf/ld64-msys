@@ -1,0 +1,1058 @@
+diff -ruN cctools/configure cctoolsnew/configure
+--- cctools/configure	2020-10-24 14:04:37.599644500 +0200
++++ cctoolsnew/configure	2020-10-24 14:20:41.754158300 +0200
+@@ -2632,12 +2632,6 @@
+   ISDARWIN_TRUE='#'
+   ISDARWIN_FALSE=
+ fi
+-
+-  ;;
+-  cygwin* )
+-    echo "Cygwin is no longer supported." 1>&2
+-    exit 1
+-  ;;
+ esac
+ 
+ if test "x$CC" = "x"; then
+diff -ruN cctools/configure.ac cctoolsnew/configure.ac
+--- cctools/configure.ac	2020-10-24 14:04:37.603641000 +0200
++++ cctoolsnew/configure.ac	2020-10-24 14:20:41.757155200 +0200
+@@ -42,10 +42,6 @@
+     isdarwin=yes
+     AM_CONDITIONAL([ISDARWIN], [true])
+   ;;
+-  cygwin* )
+-    echo "Cygwin is no longer supported." 1>&2
+-    exit 1
+-  ;;
+ esac
+ 
+ if test "x$CC" = "x"; then
+diff -ruN cctools/include/foreign/dlfcn.h cctoolsnew/include/foreign/dlfcn.h
+--- cctools/include/foreign/dlfcn.h	2020-10-24 14:04:37.802518900 +0200
++++ cctoolsnew/include/foreign/dlfcn.h	2020-10-24 14:20:41.928047300 +0200
+@@ -2,14 +2,13 @@
+ #define __CCTOOLS_PORT_DLFCN_H__
+ #include_next <dlfcn.h>
+ #include <stdio.h> /* stderr */
+-#ifdef __CYGWIN__
++#ifdef __CYGWINNN__
+ typedef struct dl_info {
+     const char  *dli_fname;
+     void        *dli_fbase;
+     const char  *dli_sname;
+     void        *dli_saddr;
+ } Dl_info;
+-
+ static inline int dladdr(void *addr, Dl_info *info)
+ {
+     fprintf(stderr, "dladdr() not implemented\n");
+diff -ruN cctools/include/mach/i386/_structs.h cctoolsnew/include/mach/i386/_structs.h
+--- cctools/include/mach/i386/_structs.h	2020-10-24 14:04:42.998293300 +0200
++++ cctoolsnew/include/mach/i386/_structs.h	2020-10-24 14:20:42.680579800 +0200
+@@ -32,9 +32,10 @@
+ #ifndef	_MACH_I386__STRUCTS_H_
+ #define	_MACH_I386__STRUCTS_H_
+ 
++#ifndef __CYGWIN__
+ #include <sys/cdefs.h> /* __DARWIN_UNIX03 */
+ #include <machine/types.h> /* __uint8_t */
+-
++#endif
+ /*
+  * i386 is the structure that is exported to user threads for 
+  * use in status/mutate calls.  This structure should never change.
+diff -ruN cctools/include/sys/cdefs.h cctoolsnew/include/sys/cdefs.h
+--- cctools/include/sys/cdefs.h	2020-10-24 14:04:44.279498800 +0200
++++ cctoolsnew/include/sys/cdefs.h	2020-10-24 14:20:42.813499900 +0200
+@@ -1,5 +1,6 @@
+ #if defined(__GLIBC__) || defined(__APPLE__) || defined(__FreeBSD__) || \
+-    defined(__OpenBSD__) || defined(__NetBSD__) || defined(__ANDROID__)
++    defined(__OpenBSD__) || defined(__NetBSD__) || defined(__ANDROID__) || \
++    defined(__CYGWIN__)
+ 
+ #include_next <sys/cdefs.h>
+ 
+diff -ruN cctools/ld64/src/ld/Makefile.in cctoolsnew/ld64/src/ld/Makefile.in
+--- cctools/ld64/src/ld/Makefile.in	2020-10-24 14:04:46.911865300 +0200
++++ cctoolsnew/ld64/src/ld/Makefile.in	2020-10-24 14:20:43.013374700 +0200
+@@ -124,8 +124,8 @@
+ am__v_lt_0 = --silent
+ am__v_lt_1 = 
+ ld_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(ld_CXXFLAGS) \
+-	$(CXXFLAGS) $(ld_LDFLAGS) $(LDFLAGS) -o $@
++	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(ld_CXXFLAGS) -Wl,--allow-multiple-definition \
++	$(CXXFLAGS) $(ld_LDFLAGS) $(LDFLAGS) $(ld_OBJECTS) $(LIBS) -o $@
+ AM_V_P = $(am__v_P_@AM_V@)
+ am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
+ am__v_P_0 = false
+@@ -447,14 +447,14 @@
+ 
+ ld_SOURCES = \
+ 	debugline.c  \
+-	InputFiles.cpp  \
+-	ld.cpp  \
+-	Options.cpp  \
++	SymbolTable.cpp \
+ 	OutputFile.cpp  \
+ 	Resolver.cpp  \
+-	Snapshot.cpp  \
+-	SymbolTable.cpp \
++	InputFiles.cpp  \
+ 	PlatformSupport.cpp \
++	Snapshot.cpp  \
++	Options.cpp  \
++	ld.cpp  \
+ 	code-sign-blobs/blob.cpp
+ 
+ all: all-recursive
+@@ -546,7 +546,7 @@
+ 
+ ld$(EXEEXT): $(ld_OBJECTS) $(ld_DEPENDENCIES) $(EXTRA_ld_DEPENDENCIES) 
+ 	@rm -f ld$(EXEEXT)
+-	$(AM_V_CXXLD)$(ld_LINK) $(ld_OBJECTS) $(ld_LDADD) $(LIBS)
++	$(AM_V_CXXLD)$(ld_LINK) $(ld_LDADD)
+ 
+ mostlyclean-compile:
+ 	-rm -f *.$(OBJEXT)
+diff -ruN cctools/ld64/src/ld/Options.cpp cctoolsnew/ld64/src/ld/Options.cpp
+--- cctools/ld64/src/ld/Options.cpp	2020-10-24 14:04:46.917861500 +0200
++++ cctoolsnew/ld64/src/ld/Options.cpp	2020-10-24 14:20:43.018375100 +0200
+@@ -1066,9 +1066,20 @@
+ 		return path.substr(0, lastSlashPos+1);
+ }
+ 
++static std::string get_extension(const std::string &path)
++{
++	auto result = path;
++	auto lastSlashIdx = result.find_last_of('/');
++	auto lastDotIdx = result.find_last_of('.');
++	if (lastDotIdx != std::string::npos && lastDotIdx > lastSlashIdx)
++		result.erase(0,lastDotIdx);
++	return result;
++}
++
+ Options::FileInfo Options::findFile(const std::string &path, const ld::dylib::File* fromDylib) const
+ {
+ 	FileInfo result;
++	bool found;
+ 
+ 	// if absolute path and not a .o file, then use SDK prefix
+ 	if ( (path[0] == '/') && (strcmp(&path[path.size()-2], ".o") != 0) ) {
+@@ -1129,6 +1140,23 @@
+ 	if ( findFile(path, {".tbd"}, result) )
+ 		return result;
+ 
++// get file extension
++	auto Extension = get_extension(path);
++	// remove line endings from extension
++	while ( Extension.find ("\n") != std::string::npos )
++	{
++	        Extension.erase ( Extension.find ("\n"), 1 );
++	}
++	while ( Extension.find ("\r") != std::string::npos )
++	{
++	        Extension.erase ( Extension.find ("\r"), 1 );
++	}
++	// find file with its own extension
++	found = findFile(path, {Extension}, result);
++	if ( found ) {
++		return result;
++ 	}		
++
+ 	// not found
+ 	throwf("file not found: %s", path.c_str());
+ }
+diff -ruN cctools/ld64/src/ld/Snapshot.cpp cctoolsnew/ld64/src/ld/Snapshot.cpp
+--- cctools/ld64/src/ld/Snapshot.cpp	2020-10-24 14:04:46.986820200 +0200
++++ cctoolsnew/ld64/src/ld/Snapshot.cpp	2020-10-24 14:20:43.049352600 +0200
+@@ -16,8 +16,9 @@
+ #include <sys/stat.h>
+ #include <libgen.h>
+ #include <time.h>
++#if __has_extension(blocks) // ld64-port
+ #include <Block.h>
+-
++#endif
+ #include "Snapshot.h"
+ #include "Options.h"
+ 
+@@ -670,12 +671,14 @@
+   }
+ }
+ 
+-void Snapshot::setSnapshotName(const char *path) { }
++void Snapshot::setOutputPath(const char *path) { }
++void Snapshot::setSnapshotName() { }
+ void Snapshot::buildPath(char *buf, const char *subdir, const char *file) { }
+ void Snapshot::buildUniquePath(char *buf, const char *subdir, const char *file) { }
++const char * Snapshot::subdir(const char *subdir) { }
+ void Snapshot::copyFileToSnapshot(const char *sourcePath, const char *subdir, char *path) { }
+ void Snapshot::createSnapshot() { }
+-void Snapshot::writeCommandLine(StringVector &args, const char *filename, bool includeCWD) { }
++void Snapshot::writeCommandLine(bool rawArgs) { }
+ void Snapshot::recordRawArgs(int argc, const char *argv[]) { }
+ void Snapshot::addSnapshotLinkArg(int argIndex, int argCount, int fileArg) { }
+ void Snapshot::recordArch(const char *arch) { }
+diff -ruN cctools/libobjc2/asmconstants.h cctoolsnew/libobjc2/asmconstants.h
+--- cctools/libobjc2/asmconstants.h	1970-01-01 01:00:00.000000000 +0100
++++ cctoolsnew/libobjc2/asmconstants.h	2020-10-24 14:20:43.478085300 +0200
+@@ -0,0 +1,21 @@
++#ifdef __LP64__
++#define DTABLE_OFFSET  64
++#define SMALLOBJ_BITS  3
++#define SHIFT_OFFSET   0
++#define DATA_OFFSET    8
++#define SLOT_OFFSET    0
++#elif defined(_WIN64)
++// long is 32 bits on Win64, so struct objc_class is smaller.  All other offsets are the same.
++#define DTABLE_OFFSET  56
++#define SMALLOBJ_BITS  3
++#define SHIFT_OFFSET   0
++#define DATA_OFFSET    8
++#define SLOT_OFFSET    0
++#else
++#define DTABLE_OFFSET  32
++#define SMALLOBJ_BITS  1
++#define SHIFT_OFFSET   0
++#define DATA_OFFSET    8
++#define SLOT_OFFSET    0
++#endif
++#define SMALLOBJ_MASK  ((1<<SMALLOBJ_BITS) - 1)
+diff -ruN cctools/libobjc2/Makefile.am cctoolsnew/libobjc2/Makefile.am
+--- cctools/libobjc2/Makefile.am	2020-10-24 14:04:48.296007100 +0200
++++ cctoolsnew/libobjc2/Makefile.am	2020-10-24 14:20:43.450103400 +0200
+@@ -2,7 +2,7 @@
+ 
+ libobjc_la_CPPFLAGS= -DTYPE_DEPENDENT_DISPATCH -DGNUSTEP -D__OBJC_RUNTIME_INTERNAL__=1 -D_XOPEN_SOURCE=500 -D__BSD_VISIBLE=1 -D_DEFAULT_SOURCE=1 -DNO_SELECTOR_MISMATCH_WARNINGS
+ 
+-libobjc_la_CFLAGS = -std=gnu99 -fPIC -fexceptions $(WARNINGS)
++libobjc_la_CFLAGS = -std=gnu99 -fno-PIC -fexceptions $(WARNINGS)
+ 
+ libobjc_la_OBJCFLAGS = -std=gnu99 $(OBJCWARNINGS)
+ 
+diff -ruN cctools/libobjc2/Makefile.in cctoolsnew/libobjc2/Makefile.in
+--- cctools/libobjc2/Makefile.in	2020-10-24 14:04:48.660781000 +0200
++++ cctoolsnew/libobjc2/Makefile.in	2020-10-24 14:20:43.454101400 +0200
+@@ -368,7 +368,7 @@
+ top_srcdir = @top_srcdir@
+ noinst_LTLIBRARIES = libobjc.la
+ libobjc_la_CPPFLAGS = -DTYPE_DEPENDENT_DISPATCH -DGNUSTEP -D__OBJC_RUNTIME_INTERNAL__=1 -D_XOPEN_SOURCE=500 -D__BSD_VISIBLE=1 -D_DEFAULT_SOURCE=1 -DNO_SELECTOR_MISMATCH_WARNINGS
+-libobjc_la_CFLAGS = -std=gnu99 -fPIC -fexceptions $(WARNINGS)
++libobjc_la_CFLAGS = -std=gnu99 -fno-PIC -fexceptions $(WARNINGS)
+ libobjc_la_OBJCFLAGS = -std=gnu99 $(OBJCWARNINGS)
+ libobjc_la_SOURCES = \
+     NSBlocks.m\
+diff -ruN cctools/libobjc2/objc_msgSend.aarch64.S cctoolsnew/libobjc2/objc_msgSend.aarch64.S
+--- cctools/libobjc2/objc_msgSend.aarch64.S	1970-01-01 01:00:00.000000000 +0100
++++ cctoolsnew/libobjc2/objc_msgSend.aarch64.S	2020-10-24 14:20:43.625995900 +0200
+@@ -0,0 +1,99 @@
++#define ARGUMENT_SPILL_SIZE (8*10 + 8*16)
++.macro MSGSEND receiver, sel
++	.cfi_startproc
++	cbz    \receiver, 4f                   // Skip everything if the receiver is nil
++	                                       // Jump to 6: if this is a small object
++	ubfx    x9, \receiver, #0, #SMALLOBJ_BITS
++	cbnz   x9, 6f
++
++	ldr    x9, [\receiver]                 // Load class to x9 if not a small int
++1:
++	ldr    x9, [x9, #DTABLE_OFFSET]        // Dtable -> x9
++	ldr    w10, [\sel]                     // selector->index -> x10
++	ldr    w11, [x9, #SHIFT_OFFSET]        // dtable->shift -> x11
++	
++	cmp    x11, #8                         // If this is a small dtable, jump to the
++	                                       // small dtable handlers
++	b.eq    2f
++	cbz    x11, 3f
++
++	ubfx   x11, x10, #16, #8               // Put byte 3 of the sel id in x12
++	add    x11, x9, x11, lsl #3            // x11 = dtable address + dtable data offset
++	ldr    x9, [x11, #DATA_OFFSET]         // Load, adding in the data offset
++2:	                                       // dtable16
++	ubfx   x11, x10, #8, #8                // Put byte 2 of the sel id in x12
++	add    x11, x9, x11, lsl #3            // x11 = dtable address + dtable data offset
++	ldr    x9, [x11, #DATA_OFFSET]         // Load, adding in the data offset
++3:                                         // dtable8
++	ubfx   x11, x10, #0, #8                // Put low byte of the sel id in x12
++	add    x11, x9, x11, lsl #3            // x11 = dtable address + dtable data offset
++	ldr    x9, [x11, #DATA_OFFSET]         // Load, adding in the data offset. 
++	                                       // Slot pointer is now in x9
++
++	cbz    x9,  5f                         // If the slot is nil, go to the C path
++
++	ldr    x9, [x9, #SLOT_OFFSET]          // Load the method from the slot
++	br     x9                              // Tail-call the method
++
++4:	                                       // Nil receiver
++	mov    x0, #0
++	mov    v0.d[0], x0
++	mov    v0.d[1], x0
++	br     lr
++5:                                        // Slow lookup
++	                                      // Save anything that will be clobbered by
++	                                      // the call
++	stp    x0, x1, [sp, #-(ARGUMENT_SPILL_SIZE)]!
++	stp    x2, x3, [sp, #16]              // The order is arbitrary, except that
++	stp    x4, x5, [sp, #32]              // fp and lr must be spilled together and
++	stp    x6, x7, [sp, #48]              // it's convenient if \receiver is spilled at sp
++	stp    q0, q1, [sp, #64]
++	stp    q2, q3, [sp, #96]
++	stp    q4, q5, [sp, #128]
++	stp    q6, q7, [sp, #160]
++	stp    fp, lr, [sp, #192]
++	add    fp, sp, 192
++	stp    \receiver, x8, [sp, #-16]!
++	.cfi_def_cfa fp, 16
++	.cfi_offset fp, -16
++	.cfi_offset lr, -8
++	                                      // We now have all argument registers, the link
++	                                      // register and the receiver spilled on the
++	                                      // stack, with sp containing
++	                                      // the address of the receiver
++
++	mov    x0, sp                         // &self, _cmd in arguments
++	mov    x1, \sel
++	bl     CDECL(slowMsgLookup)           // This is the only place where the CFI directives
++	                                      // have to be accurate...
++	mov    x9, x0                         // IMP -> x9
++	ldp    x0, x1, [sp, #16]              // Reload spilled argument registers
++	ldp    x2, x3, [sp, #32]
++	ldp    x4, x5, [sp, #64]
++	ldp    x6, x7, [sp, #64]
++	ldp    q0, q1, [sp, #80]
++	ldp    q2, q3, [sp, #112]
++	ldp    q4, q5, [sp, #144]
++	ldp    q6, q7, [sp, #176]
++	ldp    fp, lr, [sp, #208]
++	ldp    \receiver, x8, [sp], #(ARGUMENT_SPILL_SIZE + 16)
++	br     x9
++6:
++	adrp   x10, :got:SmallObjectClasses
++	ldr    x10, [x10, :got_lo12:SmallObjectClasses]
++	ldr    x9, [x10, x9, lsl #3]
++	b      1b
++	.cfi_endproc
++.endm
++
++.globl CDECL(objc_msgSend_fpret)
++TYPE_DIRECTIVE(CDECL(objc_msgSend_fpret), %function)
++.globl CDECL(objc_msgSend)
++TYPE_DIRECTIVE(CDECL(objc_msgSend), %function)
++.globl CDECL(objc_msgSend_stret)
++TYPE_DIRECTIVE(CDECL(objc_msgSend_stret), %function)
++CDECL(objc_msgSend):
++CDECL(objc_msgSend_fpret):
++CDECL(objc_msgSend_stret):
++	MSGSEND x0, x1
++
+diff -ruN cctools/libobjc2/objc_msgSend.arm.S cctoolsnew/libobjc2/objc_msgSend.arm.S
+--- cctools/libobjc2/objc_msgSend.arm.S	2020-10-24 14:04:51.178219000 +0200
++++ cctoolsnew/libobjc2/objc_msgSend.arm.S	2020-10-24 14:20:43.627992200 +0200
+@@ -1,10 +1,37 @@
+-#define DTABLE_OFFSET  32
+-#define SMALLOBJ_MASK  1
+-#define SHIFT_OFFSET   4
+-#define DATA_OFFSET    12
+-#define SLOT_OFFSET    16
+ .syntax unified
+ .fpu neon
++#if ((__ARM_ARCH >= 7) || defined (__ARM_ARCH_6T2__))
++#define RELOC_OFFSET 4
++// If we're using a CPU that supports Thumb-2, use it.  This makes the
++// objc_msgSend function 130 bytes instead of 176.  The fast path drops from 108
++// bytes to 82, meaning that it will fit in 3 32-byte i-cache lines, rather
++// than 4.  For comparison, the i386 version is 119 for objc_msgSend and
++// another 117 for objc_msgSend_fpret (the two are the same on ARM), with 70
++// bytes for the fast path..
++.thumb
++.macro byte1 dst, src
++	uxtb   \dst, \src
++.endm
++.macro byte2 dst, src
++	ubfx   \dst, \src, #8, #8
++.endm
++.macro byte3 dst, src
++	ubfx   \dst, \src, #16, #8
++.endm
++#else
++#define RELOC_OFFSET 8
++.macro byte1 dst, src
++	and \dst, \src, #0xff
++.endm
++.macro byte2 dst, src
++	and \dst, \src, #0xff00
++	lsr \dst, \dst, 8
++.endm
++.macro byte3 dst, src
++	and \dst, \src, #0xff00
++	lsr \dst, \dst, 16
++.endm
++#endif
+ 
+ // Macro for testing: logs a register value to standard error
+ .macro LOG reg
+@@ -26,10 +53,12 @@
+ 	                                       // directives for them, but not for any other pushes
+ 	tst    \receiver, SMALLOBJ_MASK        // Sets Z if this is not a small int
+ 
+-
+-	ldrne  r4, LSmallIntClass              // Small Int class -> r4 if this is a small int
++	ldr    r4, 7f
++6:
++	add    r4, pc
++	itte   ne
+ 	ldrne  r4, [r4]
+-
++	ldrne  r4, [r4]                        // Small Int class -> r4 if this is a small int
+ 	ldreq  r4, [\receiver]                 // Load class to r4 if not a small int
+ 
+ 	ldr    r4, [r4, #DTABLE_OFFSET]        // Dtable -> r4
+@@ -37,44 +66,41 @@
+ 	ldr    r5, [\sel]                      // selector->index -> r5
+ 
+ 	ldr    r6, [r4, #SHIFT_OFFSET]        // dtable->shift -> r6
+-	ldr    r4, [r4, #DATA_OFFSET]         // dtable->data -> r4
+ 	
+ 	teq    r6, #8                         // If this is a small dtable, jump to the small dtable handlers
+ 	beq    1f
+ 	teq    r6, #0
+ 	beq    2f
+ 
+-	and    r6, r5, #0xff0000
+-	ldr    r4, [r4, r6, asr#14]
+-	ldr    r4, [r4, #DATA_OFFSET]        
++	byte3  r6, r5                         // Put byte 3 of the sel id in r6
++	add    r6, r4, r6, lsl #2             // r6 = dtable address + dtable data offset
++	ldr    r4, [r6, #DATA_OFFSET]         // Load, adding in the data offset
+ 1:                                        // dtable16
+-	and    r6, r5, #0xff00
+-	ldr    r4, [r4, r6, asr#6]
+-	ldr    r4, [r4, #DATA_OFFSET]        
++	byte2  r6, r5                         // Put byte 2 of the sel id in r6
++	add    r6, r4, r6, lsl #2             // r6 = dtable address + dtable data offset
++	ldr    r4, [r6, #DATA_OFFSET]         // Load, adding in the data offset
+ 2:                                        // dtable8
+-	and    r6, r5, #0xff
+-	ldr    ip, [r4, r6, asl#2]
+-
+-	teq    ip, #0                         // If the slot is nil
+-	beq    5f                             // Go to the slow path and do the forwarding stuff
+-
+-	ldr   ip, [ip, #SLOT_OFFSET]          // Load the method from the slot
+-
+-3: 
+-	pop    {r4-r6}                        // Restore the saved callee-save registers
+-	mov    pc, ip
++	byte1  r6, r5                         // Low byte of sel id into r5
++	add    r6, r4, r6, lsl #2             // r6 = dtable address + dtable data offset
++	ldr    ip, [r6, #DATA_OFFSET]         // Load, adding in the data offset
++
++	cmp    ip, #0                         // If the slot is nil
++	ittt   ne
++	ldrne  ip, [ip, #SLOT_OFFSET]         // Load the method from the slot
++	popne  {r4-r6}                        // Restore the saved callee-save registers
++	bxne   ip
+ 
+-4:                                        // Nil receiver
+-	mov    r0, 0
+-	mov    r1, 0
+-	mov    pc, lr
+ 5:                                        // Slow lookup
+ 	push   {r0-r4, lr}                    // Save anything that will be clobbered by the call
+ 	.save  {r0-r4, lr}
+-
++#ifndef __SOFTFP__
++	vpush  {q0-q3}
++	.vsave {q0-q3}
++#endif
+ 
+ 	push   {\receiver}                    // &self, _cmd in arguments
+ 	.save  {\receiver}
++
+ 	mov    r0, sp
+ 	mov    r1, \sel
+ 
+@@ -82,10 +108,28 @@
+ 	mov    ip, r0                         // IMP -> ip
+ 
+ 	pop    {r5}                           // restore (modified) self to r5
++#ifndef __SOFTFP__
++	vpop   {q0-q3}
++#endif
+ 	pop    {r0-r4, lr}                    // Load clobbered registers
+ 	mov    \receiver, r5
+-	b      3b
+-	.fnend
++	pop    {r4-r6}                        // Restore the saved callee-save registers
++	bx     ip
++4:                                        // Nil receiver
++	mov    r0, 0
++	mov    r1, 0
++#ifndef __SOFTFP__
++#	ifdef __ARM_NEON__
++	vmov.i64 d0, #0                       // Return 0 as a float / double
++#	else
++	fmdrr d0, r0, r1
++#	endif
++#endif
++	bx     lr
++7:
++	.long	SmallObjectClasses(GOT_PREL)-((6b+RELOC_OFFSET)-7b)
++	.align  2
++.fnend
+ .endm
+ 
+ .globl CDECL(objc_msgSend_fpret)
+@@ -100,6 +144,3 @@
+ CDECL(objc_msgSend_stret):
+ 	MSGSEND r1, r2
+ 
+-LSmallIntClass:
+-	.long   SmallObjectClasses
+-	.align  2
+diff -ruN cctools/libobjc2/objc_msgSend.mips.S cctoolsnew/libobjc2/objc_msgSend.mips.S
+--- cctools/libobjc2/objc_msgSend.mips.S	2020-10-24 14:04:51.181216200 +0200
++++ cctoolsnew/libobjc2/objc_msgSend.mips.S	2020-10-24 14:20:43.632989300 +0200
+@@ -3,20 +3,10 @@
+ #ifdef _ABI64
+ #define LP             ld
+ #define SP             sd
+-#define DTABLE_OFFSET  64
+-#define SMALLOBJ_MASK  7
+-#define SHIFT_OFFSET   4
+-#define DATA_OFFSET    16
+-#define SLOT_OFFSET    32
+ #else
+ #warning N32 is untested, O32 is unsupported.
+ #define LP             lw
+ #define SP             sw
+-#define DTABLE_OFFSET  32
+-#define SMALLOBJ_MASK  1
+-#define SHIFT_OFFSET   4
+-#define DATA_OFFSET    12
+-#define SLOT_OFFSET    16
+ #endif
+ 
+ .macro dump_and_crash reg
+@@ -51,62 +41,62 @@
+ 	daddiu $t8, $t8, %lo(%neg(%gp_rel(0b)))
+ 
+ 
+-	andi   $t4, \receiver, SMALLOBJ_MASK    # Check if the receiver is a small object
+-	bne    $t4, $0, 6f                      # Get the small object class
++	andi   $t0, \receiver, SMALLOBJ_MASK    # Check if the receiver is a small object
++	bne    $t0, $0, 6f                      # Get the small object class
+ 	nop
+ 
+-	LP     $t5, (\sel)
++	LP     $t1, (\sel)
+ 
+ 	                                        # By this point, we have a non-nil
+ 	                                        # receiver that is a real pointer
+-	LP     $t4, (\receiver)                 # Load the class
++	LP     $t0, (\receiver)                 # Load the class
+ 
+-1:                                          # class loaded, stored in $t4
+-	LP     $t4, DTABLE_OFFSET($t4)          # Load the dtable from the class
+-	lw     $t6, SHIFT_OFFSET($t4)           # Load the shift (dtable size)
+-                                            # $t4 = dtable, $t5 = sel index
+-	LP     $t7, DATA_OFFSET($t4)            # Load the address of the start of the array
++1:                                          # class loaded, stored in $t0
++	LP     $t0, DTABLE_OFFSET($t0)          # Load the dtable from the class
++	lw     $t2, SHIFT_OFFSET($t0)           # Load the shift (dtable size)
++	                                        # $t0 = dtable, $t1 = sel index
++	daddi  $t3, $t0, DATA_OFFSET            # Compute the address of the start of the array
+ 
+ 
+-	beq    $0, $t6, 3f                      # If this is a small dtable, jump to the small dtable handlers
+-	daddi  $v0, $t6, -8
++	beq    $0, $t2, 3f                      # If this is a small dtable, jump to the small dtable handlers
++	daddi  $v0, $t2, -8
+ 
+ 	beq    $0, $v0, 2f
+-	lui    $t6, 0x00ff                      # The mask for a big dtable won't fit in an and immediate
+-	and    $t6, $t6, $t5                    # mask the selector
++	lui    $t2, 0x00ff                      # The mask for a big dtable won't fit in an and immediate
++	and    $t2, $t2, $t1                    # mask the selector
+ #ifdef _ABI64         
+-	dsrl   $t6, $t6, 13                     # Right shift 16, but then left shift by pointer size
++	dsrl   $t2, $t2, 13                     # Right shift 16, but then left shift by pointer size
+ #else
+-	srl    $t6, $t6, 14
++	srl    $t2, $t2, 14
+ #endif
+-	dadd   $t6, $t6, $t7
+-	LP     $t7, ($t6)
+-	LP     $t7, DATA_OFFSET($t7)
++	dadd   $t2, $t2, $t3
++	LP     $t3, ($t2)
++	daddi  $t3, $t3, DATA_OFFSET            # Compute the address of the start of the array
+ 2:                                          # dtable16:
+-	andi   $t6, $t5, 0xff00                 # mask the selector
++	andi   $t2, $t1, 0xff00                 # mask the selector
+ #ifdef _ABI64        
+-	dsrl   $t6, $t6, 5                      # Right shift 8, but then left shift by pointer size
++	dsrl   $t2, $t2, 5                      # Right shift 8, but then left shift by pointer size
+ #else
+-	srl    $t6, $t6, 6
++	srl    $t2, $t2, 6
+ #endif
+-	dadd   $t6, $t6, $t7
+-	LP     $t7, ($t6)
+-	LP     $t7, DATA_OFFSET($t7)
++	dadd   $t2, $t2, $t3
++	LP     $t3, ($t2)
++	daddi  $t3, $t3, DATA_OFFSET            # Compute the address of the start of the array
+ 3:                                          # dtable8:
+-	andi   $t6, $t5, 0xff                   # mask the selector
++	andi   $t2, $t1, 0xff                   # mask the selector
+ #ifdef _ABI64         
+-	dsll   $t6, $t6, 3                      # Left shift by pointer size
++	dsll   $t2, $t2, 3                      # Left shift by pointer size
+ #else
+-	sll    $t6, $t6, 2
++	sll    $t2, $t2, 2
+ #endif
+-	dadd   $t6, $t6, $t7
+-	LP     $t7, ($t6)
++	dadd   $t2, $t2, $t3
++	LP     $t3, ($t2)
+ 
+ 	
+-	beq    $0, $t7, 5f                      # Nil slot - invoke some kind of forwarding mechanism
++	beq    $0, $t3, 5f                      # Nil slot - invoke some kind of forwarding mechanism
+ 	nop
+ 
+-	LP     $25, SLOT_OFFSET($t7)
++	LP     $25, SLOT_OFFSET($t3)
+ 	jr     $25
+ 	nop
+ 4:                                          # returnNil:
+@@ -163,7 +153,8 @@
+ 	daddiu $a1, $a2, 0                      # replace self with _cmd in $a1
+ .endif
+ 
+-	.cfi_adjust_cfa_offset -SAVE_SIZE
++	.cfi_def_cfa_offset SAVE_SIZE
++	.cfi_offset 31, (64 - SAVE_SIZE)
+ 	jalr   $25                              # Call the slow lookup function
+ 	nop
+ 
+@@ -192,14 +183,14 @@
+ 	daddiu $sp, $sp, SAVE_SIZE                 
+ 6:                                          # smallObject:
+ #if _ABI64
+-	dsll   $t4, $t4, 3                      # Convert tag to pointer offset
+-	LP     $t6, %got_disp(CDECL(SmallObjectClasses))($t8) # Load small object classes array address
+-	daddu  $t4, $t4, $t6                    # Add the base address to the offset
++	dsll   $t0, $t0, 3                      # Convert tag to pointer offset
++	LP     $t2, %got_disp(CDECL(SmallObjectClasses))($t8) # Load small object classes array address
++	daddu  $t0, $t0, $t2                    # Add the base address to the offset
+ 	b      1b                               # Return to the normal path
+-	LP     $t4, ($t4)                       # Load the class (in delay slot)
++	LP     $t0, ($t0)                       # Load the class (in delay slot)
+ #else
+ 	b      1b
+-	LP     $t4, %got_disp(CDECL(SmallIntClass))($t8)
++	LP     $t0, %got_disp(CDECL(SmallIntClass))($t8)
+ #endif
+ 	.cfi_endproc
+ .endm
+diff -ruN cctools/libobjc2/objc_msgSend.S cctoolsnew/libobjc2/objc_msgSend.S
+--- cctools/libobjc2/objc_msgSend.S	2020-10-24 14:04:51.171222300 +0200
++++ cctoolsnew/libobjc2/objc_msgSend.S	2020-10-24 14:20:43.622996500 +0200
+@@ -1,10 +1,13 @@
+ #include "common.S"
++#include "asmconstants.h"
+ #if __x86_64
+ #include "objc_msgSend.x86-64.S"
+ #elif __i386
+ #include "objc_msgSend.x86-32.S"
+ #elif __arm__
+ #include "objc_msgSend.arm.S"
++#elif defined(__ARM_ARCH_ISA_A64)
++#include "objc_msgSend.aarch64.S"
+ #elif defined(__mips_n64) || defined(__mips_n32)
+ #include "objc_msgSend.mips.S"
+ #else
+diff -ruN cctools/libobjc2/objc_msgSend.x86-32.S cctoolsnew/libobjc2/objc_msgSend.x86-32.S
+--- cctools/libobjc2/objc_msgSend.x86-32.S	2020-10-24 14:04:51.184213300 +0200
++++ cctoolsnew/libobjc2/objc_msgSend.x86-32.S	2020-10-24 14:20:43.634987700 +0200
+@@ -1,8 +1,3 @@
+-#define DTABLE_OFFSET  32
+-#define SMALLOBJ_MASK  1
+-#define SHIFT_OFFSET   4
+-#define DATA_OFFSET    12
+-#define SLOT_OFFSET    16
+ .macro MSGSEND receiver, sel, fpret
+ 	.cfi_startproc                        
+ 	movl  \receiver(%esp), %eax
+@@ -24,35 +19,28 @@
+ 	                                      # %edx: selector index fragment
+ 
+ 	mov   SHIFT_OFFSET(%eax), %edx        # Load the shift (dtable size)
+-	mov   DATA_OFFSET(%eax), %eax         # load the address of the start of the array
+ 	cmpl  $8, %edx                        # If this is a small dtable, jump to the small dtable handlers
+ 	je    2f 
+ 	cmpl  $0, %edx 
+ 	je    3f 
+ 
+ 	mov   %ecx, %edx
+-	and   $0xff0000, %edx
+-	shrl  $14, %edx                       # Right shift 16, but then left shift by 2 (* sizeof(void*))
+-	add   %edx, %eax
+-	mov   (%eax), %eax
+-	mov   DATA_OFFSET(%eax), %eax
++	shrl  $16, %edx
++	movl  DATA_OFFSET(%eax, %edx, 4), %eax
+ 2:                                        # dtable16:
+-	mov   %ecx, %edx
+-	and   $0xff00, %edx
+-	shrl  $6, %edx
+-	add   %edx, %eax
+-	mov   (%eax), %eax
+-	mov   DATA_OFFSET(%eax), %eax
++	movzbl %ch, %edx
++	movl  DATA_OFFSET(%eax, %edx, 4), %eax
+ 3:                                        # dtable8:
+-	and   $0xff, %ecx
+-	shll  $2, %ecx
+-	add   %ecx, %eax
+-	mov   (%eax), %eax
++	movzbl %cl, %edx
++	movl  DATA_OFFSET(%eax, %edx, 4), %eax
+ 
+ 	test  %eax, %eax
+ 	jz    5f                             # Nil slot - invoke some kind of forwarding mechanism
+-	mov   SLOT_OFFSET(%eax), %eax
+-	jmp   *%eax
++	mov   SLOT_OFFSET(%eax), %ecx
++#ifdef _WIN32
++	call  *CDECL(__guard_check_icall_fptr)
++#endif
++	jmp   *%ecx
+ 4:                                       # returnNil:
+ .if \fpret
+ 	fldz
+@@ -69,31 +57,59 @@
+ 	push  %ecx                           # _cmd
+ 	push  %eax                           # &self
+ 	.cfi_def_cfa_offset 12
+-	call  slowMsgLookup@PLT
++	call  CDECL(slowMsgLookup)@PLT
+ 	add   $8, %esp                       # restore the stack
+ 
+ 
++#if defined(__MSDOS__) || defined(_WIN32) || defined(__OS2__) || defined (__CYGWIN__)
++	mov    %eax, %ecx
++	call  *CDECL(__guard_check_icall_fptr)
++	jmp   *%ecx
++#else
+ 	jmp   *%eax
++#endif
+ 6:                                       # smallObject:
+ 	push  %ebx                           # Save old %ebx
+ 	calll 7f
+ 7:
+ 	popl  %ebx;
+ 8:
+-#ifndef __CYGWIN__
+-	/*
+-	 * This causes an assertion failure in the GNU BFD Assembler on Cygwin
+-	 * BFD (GNU Binutils) 2.25 assertion fail ./coff-i386.c:569
+-	 * objc_msgSend.x86-32.S:103: Error: cannot represent relocation type BFD_RELOC_386_GOTPC
+-	 */
++#if __ELF__
++	# ELF can support GOT-relative addressing;
++	# PE/COFF and Mach-O need a text relocation.
+ 	addl  $_GLOBAL_OFFSET_TABLE_+(8b-7b), %ebx
+-#endif
+ 	leal  SmallObjectClasses@GOTOFF(%ebx), %eax
++#else
++	leal  CDECL(SmallObjectClasses), %eax
++#endif
+ 	mov   (%eax), %eax
+ 	popl  %ebx
+ 	jmp   1b 
+ 	.cfi_endproc
+ .endm
++
++#if defined(__MSDOS__) || defined(_WIN32) || defined(__OS2__) || defined (__CYGWIN__)
++.text
++.def     @feat.00;
++.scl    3;
++.type   0;
++.endef
++.globl  @feat.00
++@feat.00 = 1
++.def _objc_msgSend;
++.scl 2;
++.type 32;
++.endef
++.def _objc_msgSend_fpret;
++.scl 2;
++.type 32;
++.endef
++.def _objc_msgSend_stret;
++.scl 2;
++.type 32;
++.endef
++#endif
++
+ .globl CDECL(objc_msgSend_fpret)
+ TYPE_DIRECTIVE(CDECL(objc_msgSend_fpret), @function)
+ CDECL(objc_msgSend_fpret):
+@@ -106,3 +122,10 @@
+ TYPE_DIRECTIVE(CDECL(objc_msgSend_stret), @function)
+ CDECL(objc_msgSend_stret):
+ 	MSGSEND 8, 12, 0
++
++#if defined(__MSDOS__) || defined(_WIN32) || defined(__OS2__) || defined (__CYGWIN__)
++        .section        .drectve,"yn"
++        .ascii  " /EXPORT:_objc_msgSend"
++        .ascii  " /EXPORT:_objc_msgSend_stret"
++        .ascii  " /EXPORT:_objc_msgSend_fpret"
++#endif
+diff -ruN cctools/libobjc2/objc_msgSend.x86-64.S cctoolsnew/libobjc2/objc_msgSend.x86-64.S
+--- cctools/libobjc2/objc_msgSend.x86-64.S	2020-10-24 14:04:51.187212200 +0200
++++ cctoolsnew/libobjc2/objc_msgSend.x86-64.S	2020-10-24 14:20:43.636988200 +0200
+@@ -1,11 +1,24 @@
+-#define DTABLE_OFFSET  64
+-#define SMALLOBJ_MASK  7
+-#define SHIFT_OFFSET   4
+-#define DATA_OFFSET    16
+-#define SLOT_OFFSET    32
+ 
+-.macro MSGSEND receiver, sel
+-	.cfi_startproc                        # Start emitting unwind data.  We
++#if defined(__MSDOS__) || defined(_WIN64) || defined(__OS2__) || defined (__CYGWIN__)
++#	define START_PROC(x) .seh_proc x
++#	define END_PROC(x) .seh_endproc
++#	define FRAME_OFFSET(x) .seh_stackalloc x
++#	define FIRST_ARGUMENT_STR "%rcx"
++#	define FIRST_ARGUMENT %rcx
++#	define SECOND_ARGUMENT %rdx
++#	define THIRD_ARGUMENT %r8
++#else
++#	define START_PROC(x) .cfi_startproc
++#	define END_PROC(x) .cfi_endproc
++#	define FRAME_OFFSET(x) .cfi_adjust_cfa_offset x
++#	define FIRST_ARGUMENT_STR "%rdi"
++#	define FIRST_ARGUMENT %rdi
++#	define SECOND_ARGUMENT %rsi
++#	define THIRD_ARGUMENT %rdx
++#endif
++
++.macro MSGSEND fnname receiver, sel
++	START_PROC(\fnname)                   # Start emitting unwind data.  We
+ 	                                      # don't actually care about any of
+ 	                                      # the stuff except the slow call,
+ 	                                      # because that's the only one that
+@@ -18,41 +31,28 @@
+ 	jnz   6f                              # Get the small object class
+ 
+ 	mov   (\receiver), %r10               # Load the dtable from the class
+-1:                                        # classLoaded
+-	mov   DTABLE_OFFSET(%r10), %r10       # Load the dtable from the class
+-	
+-	push  %r12
+-	push  %r13
+-
+-	mov   (\sel), %r11                    # Load the selector index
+-	mov   SHIFT_OFFSET(%r10), %r13        # Load the shift (dtable size)
+-	mov   DATA_OFFSET(%r10), %r12         # load the address of the start of the array
+-	cmpl  $8, %r13d                       # If this is a small dtable, jump to the small dtable handlers
++1:	                                      # classLoaded
++	mov   DTABLE_OFFSET(%r10), %r10       # Load the dtable from the class into r10
++	mov   %rax, -8(%rsp)                  # %rax contains information for variadic calls
++	mov   %rbx, -16(%rsp)                 # On the fast path, spill into the red zone
++	mov   (\sel), %eax                    # Load the selector index into %eax
++	mov   SHIFT_OFFSET(%r10), %r11d       # Load the shift (dtable size) into r11
++	cmpl  $8, %r11d                       # If this is a small dtable, jump to the small dtable handlers
+ 	je    2f 
+-	cmpl  $0, %r13d
++	cmpl  $0, %r11d
+ 	je    3f 
+ 
+-	mov   %r11, %r13
+-	and   $0xff0000, %r13
+-	shrl  $13, %r13d                      # Right shift 16, but then left shift by 3 *sizeof(void*)
+-	add   %r13, %r12
+-	mov   (%r12), %r12
+-	mov   DATA_OFFSET(%r12), %r12
++	movl  %eax, %r11d
++	shrl  $16, %r11d
++	movq  DATA_OFFSET(%r10, %r11, 8), %r10
+ 2:                                        # dtable16:
+-	mov   %r11, %r13
+-	and   $0xff00, %r13
+-	shrl  $5, %r13d
+-	add   %r13, %r12
+-	mov   (%r12), %r12
+-	mov   DATA_OFFSET(%r12), %r12
++	movzbl %ah, %ebx
++	movq  DATA_OFFSET(%r10, %rbx, 8), %r10
+ 3:                                       # dtable8:
+-	mov   %r11, %r13
+-	and   $0xff, %r13
+-	shll  $3, %r13d
+-	add   %r13, %r12
+-	mov   (%r12), %r10
+-	pop   %r13
+-	pop   %r12
++	movzbl %al, %ebx
++	mov   -8(%rsp), %rax
++	movq  DATA_OFFSET(%r10, %rbx, 8), %r10
++	mov   -16(%rsp), %rbx
+ 	test  %r10, %r10
+ 	jz    5f                             # Nil slot - invoke some kind of forwarding mechanism
+ 	mov   SLOT_OFFSET(%r10), %r10
+@@ -193,7 +193,12 @@
+ 
+ 12:
+ #endif // WITH_TRACING
++#if defined(__MSDOS__) || defined(_WIN64) || defined(__OS2__) || defined (__CYGWIN__)
++	mov   %r10, %rax
++	jmp   *__guard_dispatch_icall_fptr(%rip)
++#else
+ 	jmp   *%r10
++#endif
+ 4:                                       # returnNil:
+ 	                                     # Both of the return registers are
+ 	                                     # callee-save on x86-64, so we can
+@@ -220,26 +225,26 @@
+ 
+ #rdi rsi rdx
+ 	# We're (potentially) modifying the self argument with the lookup, so we don't want to be 
+-.ifc "\receiver", "%rdi"
+-	push  %rdi
+-	mov   %rsp, %rdi
+-	push  %rsi                           # Save _cmd (not preserved across calls)
+-	push  %rdx
++.ifc "\receiver", FIRST_ARGUMENT_STR
++	push  FIRST_ARGUMENT
++	mov   %rsp, FIRST_ARGUMENT
++	push  SECOND_ARGUMENT                # Save _cmd (not preserved across calls)
++	push  THIRD_ARGUMENT
+ .else
+-	push  %rdi                           # Save the sret pointer
+-	push  %rsi                           # Save self where it can be modified
+-	mov   %rsp, %rdi
+-	push  %rdx
+-	mov   %rdx, %rsi                     # move _cmd to where the callee expects it to be
++	push  FIRST_ARGUMENT                 # Save the sret pointer
++	push  SECOND_ARGUMENT                # Save self where it can be modified
++	mov   %rsp, FIRST_ARGUMENT
++	push  THIRD_ARGUMENT
++	mov   THIRD_ARGUMENT, SECOND_ARGUMENT # move _cmd to where the callee expects it to be
+ .endif
+ 
+-	.cfi_adjust_cfa_offset 0xD8
++	FRAME_OFFSET(0xD8)
+ 	call  CDECL(slowMsgLookup)           # Call the slow lookup function
+ 	mov   %rax, %r10                     # Load the returned IMP
+ 
+-	pop   %rdx
+-	pop   %rsi
+-	pop   %rdi
++	pop   THIRD_ARGUMENT
++	pop   SECOND_ARGUMENT
++	pop   FIRST_ARGUMENT
+ 
+ 	movups	0x80(%rsp), %xmm0
+ 	movups	0x70(%rsp), %xmm1
+@@ -259,21 +264,50 @@
+ 	jmp   7b
+ 6:                                        # smallObject:
+ 	and   \receiver, %r10                 # Find the small int type
+-	shll  $3, %r10d
+ 	lea   CDECL(SmallObjectClasses)(%rip), %r11
+-	add   %r11, %r10
+-	mov   (%r10), %r10
++	mov   (%r11, %r10, 8), %r10
+ 	jmp   1b 
+-	.cfi_endproc
++	END_PROC(\fnname)
+ .endm
++#if defined(__MSDOS__) || defined(_WIN64) || defined(__OS2__) || defined (__CYGWIN__)
++.text
++.def objc_msgSend;
++.scl 2;
++.type 32;
++.endef
++.def objc_msgSend_fpret;
++.scl 2;
++.type 32;
++.endef
++.def objc_msgSend_stret;
++.scl 2;
++.type 32;
++.endef
++.globl CDECL(objc_msgSend_fpret)
++TYPE_DIRECTIVE(CDECL(objc_msgSend_fpret), @function)
++.globl CDECL(objc_msgSend)
++TYPE_DIRECTIVE(CDECL(objc_msgSend), @function)
++CDECL(objc_msgSend_fpret):
++CDECL(objc_msgSend):
++	MSGSEND objc_msgSend, %rcx, %rdx
++.globl CDECL(objc_msgSend_stret)
++TYPE_DIRECTIVE(CDECL(objc_msgSend_stret), @function)
++CDECL(objc_msgSend_stret):
++	MSGSEND objc_msgSend_stret, %rdx, %r8
++.section        .drectve,"yn"
++.ascii  " /EXPORT:objc_msgSend"
++.ascii  " /EXPORT:objc_msgSend_fpret"
++.ascii  " /EXPORT:objc_msgSend_stret"
++#else
+ .globl CDECL(objc_msgSend)
+ TYPE_DIRECTIVE(CDECL(objc_msgSend), @function)
+ .globl CDECL(objc_msgSend_fpret)
+ TYPE_DIRECTIVE(CDECL(objc_msgSend_fpret), @function)
+ CDECL(objc_msgSend_fpret):
+ CDECL(objc_msgSend):
+-	MSGSEND %rdi, %rsi
++	MSGSEND objc_msgSend, %rdi, %rsi
+ .globl CDECL(objc_msgSend_stret)
+ TYPE_DIRECTIVE(CDECL(objc_msgSend_stret), @function)
+ CDECL(objc_msgSend_stret):
+-	MSGSEND %rsi, %rdx
++	MSGSEND objc_msgSend_stret, %rsi, %rdx
++#endif
+diff -ruN cctools/misc/lipo.c cctoolsnew/misc/lipo.c
+--- cctools/misc/lipo.c	2020-10-24 14:04:55.283669400 +0200
++++ cctoolsnew/misc/lipo.c	2020-10-24 14:20:44.082711700 +0200
+@@ -117,8 +117,8 @@
+ static char *output_file = NULL;
+ static uint32_t output_filemode = 0;
+ #ifndef __OPENSTEP__
+-static struct timespec output_times[2] = { 0 };
+-static struct timeval output_timev[2] = { 0 };
++static struct timespec output_times[2] = {{ 0 }};
++static struct timeval output_timev[2] = {{ 0 }};
+ #else
+ static time_t output_timep[2] = { 0 };
+ #endif
+diff -ruN cctools/otool/Makefile.am cctoolsnew/otool/Makefile.am
+--- cctools/otool/Makefile.am	2020-10-24 14:04:55.343632400 +0200
++++ cctoolsnew/otool/Makefile.am	2020-10-24 14:20:44.130682000 +0200
+@@ -7,6 +7,7 @@
+ else
+ otool_LDADD = \
+ $(top_builddir)/libstuff/libstuff.la \
++-lobjc \
+ $(top_builddir)/libobjc2/libobjc.la \
+ $(PTHREAD_FLAGS) $(CXXABI_LIB) $(DL_LIB) $(REALLOCF_LIB) $(GCC_LIB)
+ endif
+diff -ruN cctools/otool/Makefile.in cctoolsnew/otool/Makefile.in
+--- cctools/otool/Makefile.in	2020-10-24 14:04:55.373615000 +0200
++++ cctoolsnew/otool/Makefile.in	2020-10-24 14:20:44.135679100 +0200
+@@ -348,6 +348,7 @@
+ top_srcdir = @top_srcdir@
+ @ISDARWIN_FALSE@otool_LDADD = \
+ @ISDARWIN_FALSE@$(top_builddir)/libstuff/libstuff.la \
++@ISDARWIN_FALSE@-lobjc \
+ @ISDARWIN_FALSE@$(top_builddir)/libobjc2/libobjc.la \
+ @ISDARWIN_FALSE@$(PTHREAD_FLAGS) $(CXXABI_LIB) $(DL_LIB) $(REALLOCF_LIB) $(GCC_LIB)
+ 

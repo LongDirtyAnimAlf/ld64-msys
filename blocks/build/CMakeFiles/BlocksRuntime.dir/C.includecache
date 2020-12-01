@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/superdad/Templates/ld64-msys/blocks/src/Block_private.h
+stdbool.h
+-
+
+/home/superdad/Templates/ld64-msys/blocks/src/config.h
+
+/home/superdad/Templates/ld64-msys/blocks/src/data.c
+
+/home/superdad/Templates/ld64-msys/blocks/src/runtime.c
+Block_private.h
+/home/superdad/Templates/ld64-msys/blocks/src/Block_private.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+stdint.h
+-
+config.h
+/home/superdad/Templates/ld64-msys/blocks/src/config.h
+AvailabilityMacros.h
+-
+TargetConditionals.h
+-
+libkern/OSAtomic.h
+-
+windows.h
+-
+
