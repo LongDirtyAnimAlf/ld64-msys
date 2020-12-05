@@ -27,8 +27,8 @@ CXXFLAGS="$CXXFLAGS -std=c++0x"
 ### MSYS2 extras ###
 case $host_os in
   msys* | mingw*)
-    CXXFLAGS="$CXXFLAGS -D_GNU_SOURCE"
-    CFLAGS="$CFLAGS -D_GNU_SOURCE -D_BSD_SOURCE -fcommon"
+    CXXFLAGS="$CXXFLAGS -D_GNU_SOURCE -D__USE_MINGW_ACCESS"
+    CFLAGS="$CFLAGS -D_GNU_SOURCE -D__USE_MINGW_ACCESS -D_BSD_SOURCE -fcommon"
     WS2_LIB=-lws2_32
     AC_SUBST(WS2_LIB)
     MMAN_LIB=-lmman

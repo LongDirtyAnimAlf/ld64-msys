@@ -278,8 +278,6 @@ int _NSGetExecutablePath(char *epath, unsigned int *size)
   unsigned int l = 0;
   l = GetModuleFileName(NULL, full_path, MAX_PATH);
   snprintf(epath, *size, "%s", full_path);
-  p = strrchr(epath, '\\');
-  if (p) *p = '\0';
   return 0;
 #else
     int bufsize = *size;

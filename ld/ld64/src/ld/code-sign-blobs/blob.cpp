@@ -128,7 +128,7 @@ BlobCore *BlobCore::readBlob(int fd, size_t offset, uint32_t magic, size_t minSi
 			if (BlobCore *blob = (BlobCore *)malloc(header.length())) {
 				memcpy(blob, &header, sizeof(header));
 				size_t remainder = header.length() - sizeof(header);
-				if (pread(fd, blob+1, remainder, offset + sizeof(header)) == ssize_t(remainder))
+				if (::pread(fd, blob+1, remainder, offset + sizeof(header)) == ssize_t(remainder))
 					return blob;
 				free(blob);
 				errno = EINVAL;

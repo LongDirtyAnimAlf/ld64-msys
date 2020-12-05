@@ -29,16 +29,28 @@ char *find_executable(const char *name)
     if (_NSGetExecutablePath(cctools_path, &bufsize) == -1)
         cctools_path[0] = '\0';
 
+#if defined(__MINGW32__)
+    if ((p = strrchr(cctools_path, '\\')))
+        *p = '\0';
+    snprintf(path, sizeof(path), "%s;%s", cctools_path, env_path);
+    p = strtok(path, ";");
+#else
     if ((p = strrchr(cctools_path, '/')))
         *p = '\0';
 
     snprintf(path, sizeof(path), "%s:%s", cctools_path, env_path);
 
     p = strtok(path, ":");
+#endif
 
     while (p != NULL)
     {
+
+#if defined(__MINGW32__)
+        snprintf(epath, sizeof(epath), "%s\\%s", p, name);
+#else
         snprintf(epath, sizeof(epath), "%s/%s", p, name);
+#endif
 
         if ((p = realpath(epath, NULL)))
         {
@@ -49,7 +61,11 @@ char *find_executable(const char *name)
         if (stat(epath, &st) == 0 && access(epath, F_OK|X_OK) == 0)
             return strdup(epath);
 
+#if defined(__MINGW32__)
+        p = strtok(NULL, ";");
+#else
         p = strtok(NULL, ":");
+#endif
     }
 
     return NULL;

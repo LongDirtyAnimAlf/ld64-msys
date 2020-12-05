@@ -188,7 +188,7 @@ File<A>::File(const char* path, const uint8_t* fileContent, uint64_t fileLength,
 		throw strdup(errorMessage.c_str());
 
 	// unmap file - it is no longer needed.
-	munmap((void *)fileContent, fileLength);
+	munmap((caddr_t)fileContent, fileLength);
 
 	// write out path for -t option
 	if ( logAllFiles )
