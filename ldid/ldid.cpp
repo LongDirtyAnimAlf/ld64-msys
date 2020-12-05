@@ -49,6 +49,14 @@
 #include <openssl/pkcs12.h>
 #endif
 
+#if defined(__MINGW32__)    
+#define PATH_SEP '\\'
+#define PATH_SEP_STRING "\\"
+#else
+#define PATH_SEP '/'
+#define PATH_SEP_STRING "/"
+#endif
+
 #ifdef __APPLE__
 #include <CommonCrypto/CommonDigest.h>
 
@@ -1734,7 +1742,7 @@ class Split {
     std::string base;
 
     Split(const std::string &path) {
-        size_t slash(path.rfind('/'));
+        size_t slash(path.rfind(PATH_SEP));
         if (slash == std::string::npos)
             base = path;
         else {
@@ -1754,7 +1762,7 @@ static void mkdir_p(const std::string &path) {
     if (_syscall(mkdir(path.c_str(), 0755), EEXIST) == -EEXIST)
         return;
 #endif
-    auto slash(path.rfind('/', path.size() - 1));
+    auto slash(path.rfind(PATH_SEP, path.size() - 1));
     if (slash == std::string::npos)
         return;
     mkdir_p(path.substr(0, slash));
@@ -1776,6 +1784,9 @@ static void Commit(const std::string &path, const std::string &temp) {
         _syscall(chmod(temp.c_str(), info.st_mode));
     }
 
+#ifdef __MINGW32__
+    //_syscall(remove(path.c_str()));
+#endif
     _syscall(rename(temp.c_str(), path.c_str()));
 }
 #endif
@@ -2150,7 +2161,7 @@ static void Unsign(void *idata, size_t isize, std::streambuf &output, const Prog
 }
 
 std::string DiskFolder::Path(const std::string &path) const {
-    return path_ + "/" + path;
+    return path_ + PATH_SEP_STRING + path;
 }
 
 DiskFolder::DiskFolder(const std::string &path) :
@@ -2164,7 +2175,7 @@ DiskFolder::~DiskFolder() {
             Commit(commit.first, commit.second);
 }
 
-#if !defined(__WIN32__) && !defined(__CYGWIN__)
+#if !defined(__WIN32__) && !defined(__CYGWIN__) && !defined(__MINGW32__)
 std::string readlink(const std::string &path) {
     for (size_t size(1024); ; size *= 2) {
         std::string data;
@@ -2223,7 +2234,7 @@ void DiskFolder::Find(const std::string &root, const std::string &base, const Fu
 #endif
 
         if (directory)
-            Find(root, base + name + "/", code, link);
+            Find(root, base + name + PATH_SEP_STRING, code, link);
         else
             code(base + name);
     }
@@ -2590,7 +2601,7 @@ Bundle Sign(const std::string &root, Folder &folder, const std::string &key, std
             return true;
 
         for (const auto &bundle : bundles)
-            if (Starts(name, bundle.first + "/")) {
+            if (Starts(name, bundle.first + PATH_SEP_STRING)) {
                 excludes.insert(name);
                 return true;
             }
@@ -3032,7 +3043,7 @@ int main(int argc, char *argv[]) {
 #ifndef LDID_NOPLIST
             _assert(!flag_r);
             ldid::DiskFolder folder(path);
-            path += "/" + Sign("", folder, key, requirements, ldid::fun([&](const std::string &, const std::string &) -> std::string { return entitlements; }), dummy_).path;
+            path += PATH_SEP_STRING + Sign("", folder, key, requirements, ldid::fun([&](const std::string &, const std::string &) -> std::string { return entitlements; }), dummy_).path;
 #else
             _assert(false);
 #endif
