@@ -25,6 +25,10 @@
 
 #include <unistd.h>
 
+#ifndef O_SYNC
+# define O_SYNC 0
+#endif 
+
 /*
  * This is a drop-in write(2) replacement that does the right thing when trying
  * to write out 31-bits or more of data. While the write(2) system call has
