@@ -42,47 +42,39 @@
 #pragma clang diagnostic ignored "-Wtypedef-redefinition"
 #endif
 
-/*
- * This header file contains integer types.  It's intended to also contain
- * flotaing point and other arithmetic types, as needed, later.
- */
-
+#ifndef __CYGWIN__
 #ifdef __GNUC__
 typedef __signed char		__int8_t;
 #else	/* !__GNUC__ */
 typedef char			__int8_t;
 #endif	/* !__GNUC__ */
+#endif  /* __CYGWIN__ */
+
 typedef unsigned char		__uint8_t;
 typedef	short			__int16_t;
 typedef	unsigned short		__uint16_t;
 typedef int			__int32_t;
 typedef unsigned int		__uint32_t;
 
-/* Target specific macro replacement for type "long".  In the Windows API,
-   the type long is always 32 bit, even if the target is 64 bit (LLP64).
-   On 64 bit Cygwin, the type long is 64 bit (LP64).  So, to get the right
-   sized definitions and declarations, all usage of type long in the Windows
-   headers have to be replaced by the below defined macro __LONG32. */
-#if defined(__CYGWIN__)   
-#ifndef __LP64__	/* 32 bit target, 64 bit Mingw target */
-#define __LONG32 long
-#define __ULONG32 unsigned long
-#else			/* 64 bit Cygwin target */
-#define __LONG32 int
-#define __ULONG32 unsigned int
-#endif
+#ifdef __INT64_TYPE__
+typedef __INT64_TYPE__          __int64_t;
+typedef unsigned __INT64_TYPE__ __uint64_t;
 #else
-#define __LONG32 long
-#define __ULONG32 unsigned long
+#if __SIZEOF_POINTER__ == 8 && !defined(__CYGWIN__)
+typedef long int                __int64_t;
+typedef unsigned long int       __uint64_t;
+#else
+typedef long long int           __int64_t;
+typedef unsigned long long int  __uint64_t;
+#endif
 #endif
 
-#if !defined (__CYGWIN__)
-typedef long long		__int64_t;
-typedef unsigned long long	__uint64_t;
-#endif
-
-typedef __LONG32			__darwin_intptr_t;
+typedef long                    __darwin_intptr_t;
+#ifdef __CYGWIN__
+typedef unsigned long           __darwin_natural_t;
+#else
 typedef unsigned int		__darwin_natural_t;
+#endif
 
 /*
  * The rune type below is declared to be an ``int'' instead of the more natural
@@ -111,20 +103,20 @@ typedef int			__darwin_ct_rune_t;	/* ct_rune_t */
 typedef union {
 	char		__mbstate8[128];
 	long long	_mbstateL;			/* for alignment */
-} __mbstate_t;
+} __mb_state_t;
 
-typedef __mbstate_t		__darwin_mbstate_t;	/* mbstate_t */
+typedef __mb_state_t		__darwin_mbstate_t;	/* mbstate_t */
 
-#if defined(__PTRDIFF_TYPE__)
+#if defined(__GNUC__) && defined(__PTRDIFF_TYPE__)
 typedef __PTRDIFF_TYPE__	__darwin_ptrdiff_t;	/* ptr1 - ptr2 */
 #else
-typedef __LONG32			__darwin_ptrdiff_t;	/* ptr1 - ptr2 */
-#endif
+typedef int			__darwin_ptrdiff_t;	/* ptr1 - ptr2 */
+#endif /* __GNUC__ */
 
-#if defined(__SIZE_TYPE__)
+#if defined(__GNUC__) && defined(__SIZE_TYPE__)
 typedef __SIZE_TYPE__		__darwin_size_t;	/* sizeof() */
 #else
-typedef __ULONG32		__darwin_size_t;	/* sizeof() */
+typedef unsigned long		__darwin_size_t;	/* sizeof() */
 #endif
 
 #if (__GNUC__ > 2)
@@ -133,7 +125,7 @@ typedef __builtin_va_list	__darwin_va_list;	/* va_list */
 typedef void *			__darwin_va_list;	/* va_list */
 #endif
 
-#if defined(__WCHAR_TYPE__)
+#if defined(__GNUC__) && defined(__WCHAR_TYPE__)
 typedef __WCHAR_TYPE__		__darwin_wchar_t;	/* wchar_t */
 #else
 typedef __darwin_ct_rune_t	__darwin_wchar_t;	/* wchar_t */
@@ -141,16 +133,16 @@ typedef __darwin_ct_rune_t	__darwin_wchar_t;	/* wchar_t */
 
 typedef __darwin_wchar_t	__darwin_rune_t;	/* rune_t */
 
-#if defined(__WINT_TYPE__)
+#if defined(__GNUC__) && defined(__WINT_TYPE__)
 typedef __WINT_TYPE__		__darwin_wint_t;	/* wint_t */
 #else
 typedef __darwin_ct_rune_t	__darwin_wint_t;	/* wint_t */
 #endif
 
-typedef __ULONG32		__darwin_clock_t;	/* clock() */
+typedef unsigned long		__darwin_clock_t;	/* clock() */
 typedef __uint32_t		__darwin_socklen_t;	/* socklen_t (duh) */
-typedef __LONG32		__darwin_ssize_t;	/* byte count or error */
-typedef __LONG32		__darwin_time_t;	/* time() */
+typedef long			__darwin_ssize_t;	/* byte count or error */
+typedef long			__darwin_time_t;	/* time() */
 
 #ifdef __clang__
 #pragma clang diagnostic pop

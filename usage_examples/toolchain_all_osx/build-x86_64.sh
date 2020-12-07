@@ -257,13 +257,14 @@ popd &>/dev/null
 
 if [ "$OSTYPE" == "cygwin" ]; then
     cp /bin/cygcrypto-1.1.dll $TARGETDIR/bin
-    cp /bin/cyggcc_s-seh-1.dll $TARGETDIR/bin
     cp /bin/cygiconv-2.dll $TARGETDIR/bin
     cp /bin/cygintl-8.dll $TARGETDIR/bin
     cp /bin/cygstdc++-6.dll $TARGETDIR/bin
     cp /bin/cyguuid-1.dll $TARGETDIR/bin
     cp /bin/cygwin1.dll $TARGETDIR/bin
     cp /bin/cygz.dll $TARGETDIR/bin
+    # cp /bin/cyggcc_s-seh-1.dll $TARGETDIR/bin
+    cp /cyggcc_s-1.dll $TARGETDIR/bin
 fi
 
 echo ""
