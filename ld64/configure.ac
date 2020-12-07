@@ -1,4 +1,4 @@
-AC_INIT([ld64], [530], [DonAlfredo])
+AC_INIT([ld64], [540], [longdirtyanimalf@gmail.com])
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
@@ -27,8 +27,8 @@ CXXFLAGS="$CXXFLAGS -std=c++0x"
 ### MSYS2 extras ###
 case $host_os in
   msys* | mingw*)
-    CXXFLAGS="$CXXFLAGS -D_GNU_SOURCE -D__USE_MINGW_ACCESS"
-    CFLAGS="$CFLAGS -D_GNU_SOURCE -D__USE_MINGW_ACCESS -D_BSD_SOURCE -fcommon"
+    CXXFLAGS="$CXXFLAGS -D_GNU_SOURCE"
+    CFLAGS="$CFLAGS -D_GNU_SOURCE -D_BSD_SOURCE -fcommon"
     WS2_LIB=-lws2_32
     AC_SUBST(WS2_LIB)
     MMAN_LIB=-lmman
@@ -140,7 +140,6 @@ AC_REVISION([$Revision: 1.37 $])
 AC_CONFIG_SRCDIR([APPLE_LICENSE])
 LT_PREREQ([2.2.6])
 LT_INIT(disable-static)
-# LT_INIT(static)
 
 AC_PROG_INSTALL
 
@@ -469,13 +468,15 @@ fi
 AC_C_BIGENDIAN([AC_SUBST([ENDIAN_FLAG],[-D__BIG_ENDIAN__=1])],
       [AC_SUBST([ENDIAN_FLAG],[-D__LITTLE_ENDIAN__=1])])
 
+
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([doc/man/Makefile])
-AC_CONFIG_FILES([src/Makefile])
-AC_CONFIG_FILES([src/3rd/Makefile])
-AC_CONFIG_FILES([src/ld/Makefile])
-AC_CONFIG_FILES([src/ld/parsers/Makefile])
-AC_CONFIG_FILES([src/ld/passes/Makefile])
-AC_CONFIG_FILES([src/other/Makefile])
+AC_CONFIG_FILES([ld64/Makefile])
+AC_CONFIG_FILES([ld64/doc/man/Makefile])
+AC_CONFIG_FILES([ld64/src/Makefile])
+AC_CONFIG_FILES([ld64/src/3rd/Makefile])
+AC_CONFIG_FILES([ld64/src/ld/Makefile])
+AC_CONFIG_FILES([ld64/src/ld/parsers/Makefile])
+AC_CONFIG_FILES([ld64/src/ld/passes/Makefile])
+AC_CONFIG_FILES([ld64/src/other/Makefile])
 
 AC_OUTPUT

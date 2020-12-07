@@ -94,9 +94,9 @@ bin_PROGRAMS = dyldinfo$(EXEEXT) ObjectDump$(EXEEXT) \
 subdir = ld64/src/other
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/llvm.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
@@ -113,7 +113,6 @@ ObjectDump_OBJECTS = $(am_ObjectDump_OBJECTS)
 am__DEPENDENCIES_1 =
 ObjectDump_DEPENDENCIES =  \
 	$(top_builddir)/ld64/src/ld/parsers/libParsers.la \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -260,14 +259,8 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
-LLVM_CONFIG = @LLVM_CONFIG@
-LLVM_INCLUDE_DIR = @LLVM_INCLUDE_DIR@
-LLVM_LIB_DIR = @LLVM_LIB_DIR@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
-LTO_DEF = @LTO_DEF@
-LTO_LIB = @LTO_LIB@
-LTO_RPATH = @LTO_RPATH@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@

@@ -232,14 +232,24 @@ popd &>/dev/null
 popd &>/dev/null
 
 
-echo ""
-echo "*** building ld64 ***"
-echo ""
+if [ "$OSTYPE" == "msys" ]; then
+    echo ""
+    echo "*** building ld64 ***"
+    echo ""
+    pushd tmp &>/dev/null
+    mkdir -p ld64
+    pushd ld64 &>/dev/null
+    ../../../../ld64/configure --target=$TRIPLE --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition" CFLAGS="-D_GNU_SOURCE -fcommon"
+else
+    echo ""
+    echo "*** building cctools and ld64 ***"
+    echo ""
+    pushd tmp &>/dev/null
+    mkdir -p cctools
+    pushd cctools &>/dev/null
+    ../../../../cctools/configure --target=$TRIPLE --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition" CFLAGS="-D_GNU_SOURCE -fcommon"
+fi
 
-pushd tmp &>/dev/null
-mkdir -p cctools
-pushd cctools &>/dev/null
-../../../../cctools/configure --target=$TRIPLE --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition" CFLAGS="-D_GNU_SOURCE -fcommon"
 # $GNUMAKE clean && $GNUMAKE -j$JOBS && $GNUMAKE install
 $GNUMAKE -j$JOBS && $GNUMAKE install
 popd &>/dev/null
