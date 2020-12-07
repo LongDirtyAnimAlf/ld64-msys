@@ -1,1 +1,0 @@
-/usr/bin/clang -fPIC -Wno-incompatible-pointer-types -O3 -DNDEBUG  -shared -Wl,-soname,libBlocksRuntime.so -o libBlocksRuntime.so CMakeFiles/BlocksRuntime.dir/src/runtime.c.o CMakeFiles/BlocksRuntime.dir/src/data.c.o 

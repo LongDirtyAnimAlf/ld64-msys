@@ -1,3 +1,0 @@
-/home/superdad/Templates/ld64-msys/usage_examples/toolchain_all_osx/target/lib/libBlocksRuntime.so
-/home/superdad/Templates/ld64-msys/usage_examples/toolchain_all_osx/target/include/Block.h
-/home/superdad/Templates/ld64-msys/usage_examples/toolchain_all_osx/target/include/Block_private.h

@@ -1,7 +1,0 @@
-/home/superdad/Templates/ld64-msys/blocks/build/CMakeFiles/install/strip.dir
-/home/superdad/Templates/ld64-msys/blocks/build/CMakeFiles/install/local.dir
-/home/superdad/Templates/ld64-msys/blocks/build/CMakeFiles/edit_cache.dir
-/home/superdad/Templates/ld64-msys/blocks/build/CMakeFiles/install.dir
-/home/superdad/Templates/ld64-msys/blocks/build/CMakeFiles/list_install_components.dir
-/home/superdad/Templates/ld64-msys/blocks/build/CMakeFiles/rebuild_cache.dir
-/home/superdad/Templates/ld64-msys/blocks/build/CMakeFiles/BlocksRuntime.dir

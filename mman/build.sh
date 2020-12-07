@@ -13,10 +13,18 @@ CMAKE_EXTRA_ARGS=""
 CMAKE_GENERATOR=""
 HOST_TRIPLE=""
 
+C_COMPILER=clang
+CXX_COMPILER=clang++
+
 case "$OSTYPE" in
   darwin*)  CMAKE_GENERATOR=-G"Xcode" ;;
   linux*)   CMAKE_GENERATOR=-G"Unix Makefiles" ;;
   bsd*)     CMAKE_GENERATOR=-G"Unix Makefiles" ;;
+  cygwin*)
+            C_COMPILER=gcc
+            CXX_COMPILER=g++
+            CMAKE_GENERATOR=-G"Unix Makefiles"
+  ;;
   msys*)
             if [ "$(getconf LONG_BIT)" == "64" ]; then
               HOST_TRIPLE=x86_64-pc-mingw64
@@ -41,8 +49,8 @@ INCLUDE_FIX="-Wno-incompatible-pointer-types "
 cmake .. \
  -DCMAKE_C_FLAGS=$INCLUDE_FIX \
  -DCMAKE_CXX_FLAGS=$INCLUDE_FIX \
- -DCMAKE_C_COMPILER=clang \
- -DCMAKE_CXX_COMPILER=clang++ \
+ -DCMAKE_C_COMPILER=$C_COMPILER \
+ -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
  -DCMAKE_BUILD_TYPE=RELEASE \
  -DLLVM_INCLUDE_TESTS=OFF \
  -DCMAKE_INSTALL_PREFIX=$INSTALLPREFIX \
