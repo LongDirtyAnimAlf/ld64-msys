@@ -2811,6 +2811,8 @@ int main(int argc, char *argv[]) {
     OpenSSL_add_all_algorithms();
 #endif
 
+    char* p;
+
     union {
         uint16_t word;
         uint8_t byte[2];
@@ -3027,6 +3029,12 @@ int main(int argc, char *argv[]) {
     size_t filei(0), filee(0);
     _foreach (file, files) try {
         std::string path(file);
+
+        p = strchr(path.c_str(), '\\');
+        while (p) {
+            *p = '/';
+            p  = strchr(path.c_str(), '\\');
+        }
 
         struct stat info;
         _syscall(stat(path.c_str(), &info));
