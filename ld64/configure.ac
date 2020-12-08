@@ -1,4 +1,4 @@
-AC_INIT([ld64], [540], [longdirtyanimalf@gmail.com])
+AC_INIT([ld64], [530], [longdirtyanimalf@gmail.com])
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
