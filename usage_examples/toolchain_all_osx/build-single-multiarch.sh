@@ -235,7 +235,19 @@ if [ "$OSTYPE" == "cygwin" ]; then
     cp /bin/cygwin1.dll $TARGETDIR/bin
     cp /bin/cygz.dll $TARGETDIR/bin
     # cp /bin/cyggcc_s-seh-1.dll $TARGETDIR/bin
-    cp /cyggcc_s-1.dll $TARGETDIR/bin
+    cp /bin/cyggcc_s-1.dll $TARGETDIR/bin
+fi
+if [ "$OSTYPE" == "msys" ]; then
+    cp /bin/libdl.dll $TARGETDIR/bin
+    cp /bin/libffi-7.dll $TARGETDIR/bin
+    cp /bin/libgcc_s_dw2-1.dll $TARGETDIR/bin
+    cp /bin/libstdc++-6.dll $TARGETDIR/bin
+    cp /bin/libwinpthread-1.dll $TARGETDIR/bin
+    cp /bin/zlib1.dll $TARGETDIR/bin
+    cp /bin/libsystre-0.dll $TARGETDIR/bin
+    cp /bin/libtre-5.dll $TARGETDIR/bin
+    cp /bin/libintl-8.dll $TARGETDIR/bin
+    cp /bin/libiconv-2.dll $TARGETDIR/bin
 fi
 
 echo ""
