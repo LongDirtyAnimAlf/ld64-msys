@@ -3029,13 +3029,13 @@ int main(int argc, char *argv[]) {
     size_t filei(0), filee(0);
     _foreach (file, files) try {
         std::string path(file);
-
+#if defined(__CYGWIN__)
         p = strchr(path.c_str(), '\\');
         while (p) {
             *p = '/';
             p  = strchr(path.c_str(), '\\');
         }
-
+#endif
         struct stat info;
         _syscall(stat(path.c_str(), &info));
 
