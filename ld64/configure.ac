@@ -1,4 +1,4 @@
-AC_INIT([ld64], [530], [longdirtyanimalf@gmail.com])
+AC_INIT([ld64], [973.0.1], [longdirtyanimalf@gmail.com])
 
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
@@ -22,11 +22,21 @@ if test "x$OBJCFLAGS" = "x"; then
   OBJCFLAGS="-O3"
 fi
 
-CXXFLAGS="$CXXFLAGS -std=c++0x"
+case $host_os in
+  *aaaaaaaacygwin* )
+    CXXFLAGS="$CXXFLAGS -std=gnu++17"
+    ;;
+  aaaaaaaaa* )
+    CXXFLAGS="$CXXFLAGS -std=c++17"
+    ;;
+esac
+
+# CXXFLAGS="$CXXFLAGS -std=c++17"
+CXXFLAGS="$CXXFLAGS -std=gnu++17"
 
 ### MSYS2 extras ###
 case $host_os in
-  msys* | mingw*)
+  *mingw* | *cygwin* | *msys* )
     CXXFLAGS="$CXXFLAGS -D_GNU_SOURCE"
     CFLAGS="$CFLAGS -D_GNU_SOURCE -D_BSD_SOURCE -fcommon"
     WS2_LIB=-lws2_32
@@ -80,7 +90,7 @@ case "$CCVERSION" in
     WARNINGS="$WARNINGS -Wall -Wno-long-long -Wno-import -Wno-format -Wno-deprecated -Wno-unused-variable"
     WARNINGS="$WARNINGS -Wno-unused-private-field -Wno-unused-function -Wno-invalid-offsetof"
     WARNINGS="$WARNINGS -Wno-int-conversion -Wno-char-subscripts -Wno-missing-braces -Wno-macro-redefined"
-    WARNINGS="$WARNINGS -Wno-unused-command-line-argument"
+    WARNINGS="$WARNINGS -Wno-unused-command-line-argument -Wno-unused-but-set-variable"
     OBJCWARNINGS="-Wall -Wno-objc-root-class -Wno-deprecated-objc-isa-usage"
   ;;
   * )
@@ -89,16 +99,17 @@ case "$CCVERSION" in
   ;;
 esac
 
-EXTRAFLAGS="$EXTRAFLAGS -DLD64_VERSION_NUM=530"
+EXTRAFLAGS="$EXTRAFLAGS -DLD64_VERSION_NUM=609"
 
 case "$CXXVERSION" in
   *clang* )
     if test "x$isdarwin" = "xyes"; then
       CXXFLAGS="$CXXFLAGS -stdlib=libc++"
     fi
-    EXTRACXXFLAGS="$EXTRACXXFLAGS -fblocks"
   ;;
 esac
+
+EXTRACXXFLAGS="$EXTRACXXFLAGS -fblocks -DUSE_BLOCKS"
 
 case $host_cpu in
   powerpc)
@@ -134,7 +145,7 @@ AM_INIT_AUTOMAKE([1.10 no-define no-dist-gzip dist-bzip2 tar-ustar subdir-object
 AC_CONFIG_MACRO_DIR([m4])
 AM_MAINTAINER_MODE
 
-AC_PREREQ([2.57])
+AC_PREREQ([2.71])
 AC_REVISION([$Revision: 1.37 $])
 
 AC_CONFIG_SRCDIR([APPLE_LICENSE])
@@ -271,7 +282,6 @@ AC_CHECK_FUNC([clock_gettime],[AC_DEFINE(HAVE_CLOCK_GETTIME, 1)])
 AC_CHECK_FUNC([write64],[AC_DEFINE(HAVE_WRITE64, 1)])
 
 ### Check for __cxa_demangle in various C++ ABI libs ###
-
 AC_CHECK_LIB([c++abi],[__cxa_demangle],[CXXABI_LIB=-lc++abi],[
   AC_CHECK_LIB([c++],[__cxa_demangle],[CXXABI_LIB=-lc++],[
     AC_CHECK_LIB([supc++],[__cxa_demangle],[CXXABI_LIB=-lsupc++],[
@@ -281,14 +291,6 @@ AC_CHECK_LIB([c++abi],[__cxa_demangle],[CXXABI_LIB=-lc++abi],[
 ])
 
 AC_SUBST(CXXABI_LIB)
-
-### Check for __gcc_personality_v0 in -lgcc (NetBSD needs this)
-
-AC_CHECK_LIB([gcc], [__gcc_personality_v0], [
-  GCC_LIB="-lgcc"
-])
-
-AC_SUBST(GCC_LIB)
 
 ### Check for supported warning options ###
 
@@ -332,6 +334,16 @@ LDFLAGS=$ORIGLDFLAGS
 
 CHECK_LLVM
 LDFLAGS="$LDFLAGS $LTO_RPATH"
+
+### Check for dispatch library ###
+
+AC_CHECK_LIB([dispatch], [dispatch_once], [
+  AC_CHECK_HEADERS([dispatch/dispatch.h], [DISPATCH_LIB=-ldispatch])], [
+    AC_CHECK_LIB([c], [dispatch_sync], [
+      AC_CHECK_HEADERS([dispatch/dispatch.h], [DISPATCH_LIB=])], [])
+    AC_SUBST(DISPATCH_LIB)
+  ])
+AC_SUBST(DISPATCH_LIB)
 
 ### Check for libfts (musl) ###
 
@@ -422,8 +434,12 @@ if test "x$enable_tapi_support" = "xyes"; then
     AC_LANG_PUSH([C++])
     save_LIBS="$LIBS"
     LIBS="$LIBS -ltapi"
-    AC_TRY_LINK([#include <tapi/tapi.h>],
-                [return tapi::APIVersion::getMajor();],
+#    AC_TRY_LINK([#include <tapi/tapi.h>],
+#                [return tapi::APIVersion::getMajor();],
+#                [cctools_cv_tapi_support=yes],
+#                [cctools_cv_tapi_support=no])
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <tapi/tapi.h>]],
+                [[return tapi::APIVersion::getMajor();]])],
                 [cctools_cv_tapi_support=yes],
                 [cctools_cv_tapi_support=no])
     LIBS="$save_LIBS"

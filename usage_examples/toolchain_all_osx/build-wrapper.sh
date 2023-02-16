@@ -14,7 +14,7 @@ function verbose_cmd
     eval "$@"
 }
 
-TARGETDIR="$PWD/target"
+TARGETDIR="$PWD/../../target"
 SDKDIR="$TARGETDIR/SDK"
 
 mkdir -p $TARGETDIR

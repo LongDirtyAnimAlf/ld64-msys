@@ -1,6 +1,20 @@
-PROJECT( BlocksRuntime C )
+cmake_minimum_required(VERSION 3.13.4)
 
-cmake_minimum_required(VERSION 2.8)
+project(BlocksRuntime)
+
+# Must go below project(..)
+include(GNUInstallDirs)
+
+set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to conform to")
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+
+if (CYGWIN)
+  # Cygwin is a bit stricter and lack things like 'strdup', 'stricmp', etc in
+  # c++xx mode.
+  set(CMAKE_CXX_EXTENSIONS YES)
+else()
+  set(CMAKE_CXX_EXTENSIONS NO)
+endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
