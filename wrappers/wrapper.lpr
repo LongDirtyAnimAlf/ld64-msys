@@ -125,7 +125,11 @@ begin
     begin
       {$if DECLARED(TARGETCPU)}
       APRocess.Parameters.Append('-arch');
+      {$if defined(arm64_darwin) OR defined(arm64_ios)}
+      APRocess.Parameters.Append('arm64');
+      {$else}
       APRocess.Parameters.Append(TARGETCPU);
+      {$endif}
       {$endif}
     end;
 
