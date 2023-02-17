@@ -21,6 +21,15 @@ begin
   {$ifdef MSWINDOWS}
   aExe:=aExe+'.exe';
   {$endif}
+  {$ifdef UNIX}
+  if NOT FileExists(aExe) then
+  begin
+    //if EXEWRAPPER='clang' then
+    begin
+      aExe:='/usr/bin/'+EXEWRAPPER;
+    end;
+  end;
+  {$endif}
   if FileExists(aExe) then
   begin
     AProcess:=TProcess.Create(nil);

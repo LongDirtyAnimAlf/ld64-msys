@@ -13,4 +13,8 @@
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
+#ifndef __MINGW32__
+#define O_BINARY 0
+#endif
+
 #endif // BZERO_H

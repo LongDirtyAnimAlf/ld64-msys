@@ -65,6 +65,8 @@
 #include "macho_relocatable_file.h"
 #include "ResponseFiles.h"
 
+#include "bzero.h"
+
 // from FunctionNameDemangle.h
 extern "C" size_t fnd_get_demangled_name(const char *mangledName, char *outputBuffer, size_t length);
 

@@ -41,6 +41,7 @@
 #include "Architectures.hpp"
 #include "MachOTrie.hpp"
 #include "../ld/code-sign-blobs/superblob.h"
+#include "bzero.h"
 
 static bool printRebase = false;
 static bool printBind = false;

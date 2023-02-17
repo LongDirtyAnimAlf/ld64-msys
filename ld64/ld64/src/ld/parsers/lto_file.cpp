@@ -51,6 +51,8 @@
 #include "macho_relocatable_file.h"
 #include "lto_file.h"
 
+#include "bzero.h"
+
 // ld64-port: We keep this even though it has been removed upstream
 // as I am not sure if it won't break anything on all supported
 // platforms.

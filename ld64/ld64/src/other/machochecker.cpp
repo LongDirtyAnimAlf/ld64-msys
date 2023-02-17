@@ -40,6 +40,7 @@
 
 #include "MachOFileAbstraction.hpp"
 #include "Architectures.hpp"
+#include "bzero.h"
 
 
  __attribute__((noreturn))

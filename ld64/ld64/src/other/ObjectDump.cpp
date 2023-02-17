@@ -35,6 +35,8 @@
 #include "parsers/macho_relocatable_file.h"
 #include "parsers/lto_file.h"
 
+#include "bzero.h"
+
 #ifdef __GLIBCXX__
 #include <algorithm>
 #endif

@@ -95,13 +95,8 @@ function git_clone_repository
     popd &>/dev/null
 }
 
-TMPDIR="$PWD/tmp"
-mkdir -p $TMPDIR
-
 TARGETDIR="$PWD/target"
 SDKDIR="$TARGETDIR/SDK"
-
-PATCH_DIR=$PWD/../../patches
 
 mkdir -p $TARGETDIR
 mkdir -p $TARGETDIR/bin
@@ -114,15 +109,13 @@ echo ""
 echo "*** building ld64 ***"
 echo ""
 
-pushd tmp &>/dev/null
-mkdir -p ld64
-pushd ld64 &>/dev/null
+mkdir -p build-ld64-make
+pushd build-ld64-make &>/dev/null
 # $GNUMAKE distclean
 ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition"
 # $GNUMAKE clean
 $GNUMAKE -j$JOBS
 $GNUMAKE install
-popd &>/dev/null
 popd &>/dev/null
 
 echo ""
