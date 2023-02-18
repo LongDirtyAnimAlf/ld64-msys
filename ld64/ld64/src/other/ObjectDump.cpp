@@ -1259,7 +1259,7 @@ static ld::relocatable::File* createReader(const char* path)
 			}
 		}
 		else {
-			for (unsigned long i=0; i < OSSwapBigToHostInt32(fh->nfat_arch); ++i) {
+			for (ULONG_PTR_ i=0; i < OSSwapBigToHostInt32(fh->nfat_arch); ++i) {
 				if ( OSSwapBigToHostInt32(archs[i].cputype) == (uint32_t)sPreferredArch ) {
 					if ( ((uint32_t)sPreferredSubArch == 0xFFFFFFFF) || ((uint32_t)sPreferredSubArch == OSSwapBigToHostInt32(archs[i].cpusubtype)) ) {
 						p = p + OSSwapBigToHostInt32(archs[i].offset);

@@ -190,7 +190,7 @@ public:
 														const struct Parser<A>::CFI_CU_InfoArrays&) = 0;
 	virtual void					makeFixups(class Parser<A>& parser, const struct Parser<A>::CFI_CU_InfoArrays&);
 	virtual bool					addRelocFixup(class Parser<A>& parser, const macho_relocation_info<P>*);
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const { return 0; }
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const { return 0; }
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const { return false; }
 	virtual	bool					ignoreLabel(const char* label) const { return false; }
@@ -468,7 +468,7 @@ protected:
 	virtual const char*				unlabeledAtomName(Parser<A>&, pint_t)	{ return "4-byte-literal"; }
 	virtual	pint_t					elementSizeAtAddress(pint_t addr)		{ return 4; }
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t)				{ return ld::Atom::combineByNameAndContent; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 	virtual	bool					ignoreLabel(const char* label) const;
@@ -488,7 +488,7 @@ protected:
 	virtual const char*				unlabeledAtomName(Parser<A>&, pint_t)	{ return "8-byte-literal"; }
 	virtual	pint_t					elementSizeAtAddress(pint_t addr)		{ return 8; }
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t)				{ return ld::Atom::combineByNameAndContent; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 	virtual	bool					ignoreLabel(const char* label) const;
@@ -508,7 +508,7 @@ protected:
 	virtual const char*				unlabeledAtomName(Parser<A>&, pint_t)	{ return "16-byte-literal"; }
 	virtual	pint_t					elementSizeAtAddress(pint_t addr)		{ return 16; }
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t)				{ return ld::Atom::combineByNameAndContent; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 	virtual	bool					ignoreLabel(const char* label) const;
@@ -533,7 +533,7 @@ protected:
 	virtual ld::Atom::Scope			scopeAtAddress(Parser<A>& parser, pint_t addr);
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t);
 	virtual	bool					ignoreLabel(const char* label) const 	{ return true; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 
@@ -559,7 +559,7 @@ protected:
 	virtual	pint_t					elementSizeAtAddress(pint_t addr)		{ return sizeof(pint_t); }
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t);
 	virtual	bool					ignoreLabel(const char* label) const 	{ return true; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 
@@ -582,7 +582,7 @@ protected:
 	virtual	pint_t					elementSizeAtAddress(pint_t addr)		{ return 4*sizeof(pint_t); }
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t)				{ return ld::Atom::combineByNameAndReferences; }
 	virtual	bool					ignoreLabel(const char* label) const	{ return true; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 private:
@@ -610,7 +610,7 @@ protected:
 	virtual	pint_t					elementSizeAtAddress(pint_t addr);
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t)				{ return ld::Atom::combineNever; }
 	virtual	bool					ignoreLabel(const char* label) const	{ return true; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 																			{ return 0; }
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const { return false; }
@@ -632,7 +632,7 @@ protected:
 	virtual	pint_t					elementSizeAtAddress(pint_t addr)		{ return sizeof(pint_t); }
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t)				{ return ld::Atom::combineByNameAndReferences; }
 	virtual	bool					ignoreLabel(const char* label) const	{ return true; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 private:
@@ -674,7 +674,7 @@ protected:
 	virtual	pint_t					elementSizeAtAddress(pint_t addr)		{ return sizeof(pint_t); }
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t)				{ return ld::Atom::combineByNameAndReferences; }
 	virtual	bool					ignoreLabel(const char* label) const	{ return true; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 	virtual const char*				targetCString(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
@@ -715,7 +715,7 @@ protected:
 	virtual bool					useElementAt(Parser<A>& parser, 
 												struct Parser<A>::LabelAndCFIBreakIterator& it, pint_t addr);
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t)				{ return ld::Atom::combineByNameAndContent; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 
@@ -733,7 +733,7 @@ protected:
 	typedef typename A::P			P;
 
 	virtual ld::Atom::Combine		combine(Parser<A>&, pint_t)				{ return ld::Atom::combineByNameAndContent; }
-	virtual unsigned long			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
+	virtual ULONG_PTR_			contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const;
 	virtual bool					canCoalesceWith(const class Atom<A>* atom, const ld::Atom& rhs, 
 													const ld::IndirectBindingTable& ind) const;
 };
@@ -755,7 +755,7 @@ public:
 	virtual uint64_t							objectAddress() const { return _objAddress; }
 	virtual void								copyRawContent(uint8_t buffer[]) const;
 	virtual const uint8_t*						rawContentPointer() const { return contentPointer(); }
-	virtual unsigned long						contentHash(const ld::IndirectBindingTable& ind) const 
+	virtual ULONG_PTR_						contentHash(const ld::IndirectBindingTable& ind) const 
 															{ if ( _hash == 0 ) _hash = sect().contentHash(this, ind); return _hash; }
 	virtual bool								canCoalesceWith(const ld::Atom& rhs, const ld::IndirectBindingTable& ind) const 
 															{ return sect().canCoalesceWith(this, rhs, ind); }
@@ -839,7 +839,7 @@ private:
 	pint_t										_size;
 	pint_t										_objAddress;
 	const char*									_name;
-	mutable unsigned long						_hash;
+	mutable ULONG_PTR_						_hash;
 
 	uint64_t									_fixupsStartIndex		: kFixupStartIndexBits,
 												_lineInfoStartIndex		: kLineInfoStartIndexBits,			
@@ -5930,7 +5930,7 @@ bool Literal4Section<A>::ignoreLabel(const char* label) const
 }
 
 template <typename A>
-unsigned long Literal4Section<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+ULONG_PTR_ Literal4Section<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 {
 	const uint32_t* literalContent = (uint32_t*)atom->contentPointer();
 	return *literalContent;
@@ -5960,13 +5960,13 @@ bool Literal8Section<A>::ignoreLabel(const char* label) const
 }
 
 template <typename A>
-unsigned long Literal8Section<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+ULONG_PTR_ Literal8Section<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 {
 #if defined(__LP64__) || defined(_WIN64)
 	const uint64_t* literalContent = (uint64_t*)atom->contentPointer();
 	return *literalContent;
 #else
-	unsigned long hash = 5381;
+	ULONG_PTR_ hash = 5381;
 	const uint8_t* byteContent = atom->contentPointer();
 	for (int i=0; i < 8; ++i) {
 		hash = hash * 33 + byteContent[i];
@@ -6000,9 +6000,9 @@ bool Literal16Section<A>::ignoreLabel(const char* label) const
 }
 
 template <typename A>
-unsigned long Literal16Section<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+ULONG_PTR_ Literal16Section<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 {
-	unsigned long hash = 5381;
+	ULONG_PTR_ hash = 5381;
 	const uint8_t* byteContent = atom->contentPointer();
 	for (int i=0; i < 16; ++i) {
 		hash = hash * 33 + byteContent[i];
@@ -6059,9 +6059,9 @@ Atom<A>* CStringSection<A>::findAtomByAddress(pint_t addr)
 }
 
 template <typename A>
-unsigned long CStringSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+ULONG_PTR_ CStringSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 {
-	unsigned long hash = 5381;
+	ULONG_PTR_ hash = 5381;
 	const char* stringContent = (char*)atom->contentPointer();
 	for (const char* s = stringContent; *s != '\0'; ++s) {
 		hash = hash * 33 + *s;
@@ -6211,10 +6211,10 @@ const char* NonLazyPointerSection<A>::targetName(const class Atom<A>* atom, cons
 }
 
 template <typename A>
-unsigned long NonLazyPointerSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+ULONG_PTR_ NonLazyPointerSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 {
 	assert(atom->combine() == ld::Atom::combineByNameAndReferences);
-	unsigned long hash = 9508;
+	ULONG_PTR_ hash = 9508;
 	for (const char* s = this->targetName(atom, ind); *s != '\0'; ++s) {
 		hash = hash * 33 + *s;
 	}
@@ -6336,10 +6336,10 @@ const char* TLVPointerSection<A>::targetName(const class Atom<A>* atom, const ld
 }
 
 template <typename A>
-unsigned long TLVPointerSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+ULONG_PTR_ TLVPointerSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 {
 	assert(atom->combine() == ld::Atom::combineByNameAndReferences);
-	unsigned long hash = 9508;
+	ULONG_PTR_ hash = 9508;
 	bool isStatic;
 	for (const char* s = this->targetName(atom, ind, &isStatic); *s != '\0'; ++s) {
 		hash = hash * 33 + *s;
@@ -6410,11 +6410,11 @@ const uint8_t* CFStringSection<A>::targetContent(const class Atom<A>* atom, cons
 }
 
 template <typename A>
-unsigned long CFStringSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+ULONG_PTR_ CFStringSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 {
 	// base hash of CFString on hash of cstring it wraps
 	ContentType cType;
-	unsigned long hash;
+	ULONG_PTR_ hash;
 	unsigned int charCount;
 	const uint8_t* content = this->targetContent(atom, ind, &cType, &charCount);
 	switch ( cType ) {
@@ -6434,9 +6434,9 @@ unsigned long CFStringSection<A>::contentHash(const class Atom<A>* atom, const l
 		case contentUnknown:
 			// <rdar://problem/14134211> For malformed CFStrings, hash to address of atom so they have unique hashes
 #if _WIN64
-			return ULLONG_MAX - (unsigned long long)(atom);
+			return ULLONG_MAX - (ULONG_PTR_)(atom);
 #else
-			return ULONG_MAX - (unsigned long)(atom);
+			return ULONG_MAX - (ULONG_PTR_)(atom);
 #endif
 	}
 	return 0;
@@ -6574,9 +6574,9 @@ const char* ObjC2ClassRefsSection<A>::targetClassName(const class Atom<A>* atom,
 
 
 template <typename A>
-unsigned long ObjC2ClassRefsSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+ULONG_PTR_ ObjC2ClassRefsSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 {
-	unsigned long hash = 978;
+	ULONG_PTR_ hash = 978;
 	for (const char* s = targetClassName(atom, ind); *s != '\0'; ++s) {
 		hash = hash * 33 + *s;
 	}
@@ -6651,11 +6651,11 @@ const char* PointerToCStringSection<A>::targetCString(const class Atom<A>* atom,
 }
 
 template <typename A>
-unsigned long PointerToCStringSection<A>::contentHash(const class Atom<A>* atom, 
+ULONG_PTR_ PointerToCStringSection<A>::contentHash(const class Atom<A>* atom, 
 													const ld::IndirectBindingTable& indirectBindingTable) const
 {
 	// make hash from section name and target cstring name
-	unsigned long hash = 123;
+	ULONG_PTR_ hash = 123;
 	for (const char* s = this->sectionName(); *s != '\0'; ++s) {
 		hash = hash * 33 + *s;
 	}
@@ -6689,9 +6689,9 @@ bool PointerToCStringSection<A>::canCoalesceWith(const class Atom<A>* atom, cons
 
 
 template <typename A>
-unsigned long UTF16StringSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
+ULONG_PTR_ UTF16StringSection<A>::contentHash(const class Atom<A>* atom, const ld::IndirectBindingTable& ind) const
 {
-	unsigned long hash = 5381;
+	ULONG_PTR_ hash = 5381;
 	const uint16_t* stringContent = (uint16_t*)atom->contentPointer();
 	// some buggy compilers end utf16 data with single byte, so don't use last word in hash computation
 	unsigned int count = (atom->size()/2) - 1;

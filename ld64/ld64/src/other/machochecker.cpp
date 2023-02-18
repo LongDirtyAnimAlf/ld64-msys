@@ -2105,7 +2105,7 @@ static void check(const char* path, const char* verifierDstRoot, const std::vect
 		if ( mh->magic == OSSwapBigToHostInt32(FAT_MAGIC) ) {
 			const struct fat_header* fh = (struct fat_header*)p;
 			const struct fat_arch* archs = (struct fat_arch*)(p + sizeof(struct fat_header));
-			for (unsigned long i=0; i < OSSwapBigToHostInt32(fh->nfat_arch); ++i) {
+			for (ULONG_PTR_ i=0; i < OSSwapBigToHostInt32(fh->nfat_arch); ++i) {
 				size_t offset = OSSwapBigToHostInt32(archs[i].offset);
 				size_t size = OSSwapBigToHostInt32(archs[i].size);
 				unsigned int cputype = OSSwapBigToHostInt32(archs[i].cputype);

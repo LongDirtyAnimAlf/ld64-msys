@@ -30,10 +30,6 @@
 #include <streams/streams.h>
 #include <mach-o/loader.h>
 
-// long changes needed ??
-// __LP64__
-// _WIN64
-
 extern long rld_load(
     NXStream *stream,
     struct mach_header **header_addr,

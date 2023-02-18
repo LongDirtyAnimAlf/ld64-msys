@@ -801,7 +801,7 @@ void InputFiles::addLinkerOptionLibraries(ld::Internal& state, ld::File::AtomHan
 void InputFiles::createIndirectDylibs()
 {	
 	// keep processing dylibs until no more dylibs are added
-	unsigned long lastMapSize = 0;
+	ULONG_PTR_ lastMapSize = 0;
 	std::set<ld::dylib::File*>  dylibsProcessed;
 	while ( lastMapSize != _allDylibs.size() ) {
 		lastMapSize = _allDylibs.size();

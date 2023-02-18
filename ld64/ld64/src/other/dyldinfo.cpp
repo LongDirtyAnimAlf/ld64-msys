@@ -628,7 +628,7 @@ typename A::P::uint_t*	DyldInfoPrinter<A>::mappedAddressForVMAddress(pint_t vmad
 {
 	for(unsigned int i=0; i < fSegments.size(); ++i) {
 		if ( (fSegments[i]->vmaddr() <= vmaddress) && (vmaddress < (fSegments[i]->vmaddr()+fSegments[i]->vmsize())) ) {
-			unsigned long offsetInMappedFile = fSegments[i]->fileoff()+vmaddress-fSegments[i]->vmaddr();
+			ULONG_PTR_ offsetInMappedFile = fSegments[i]->fileoff()+vmaddress-fSegments[i]->vmaddr();
 			return (pint_t*)((uint8_t*)fHeader + offsetInMappedFile);
 		}
 	}
@@ -2660,7 +2660,7 @@ static void dump(const char* path)
 		if ( mh->magic == OSSwapBigToHostInt32(FAT_MAGIC) ) {
 			const struct fat_header* fh = (struct fat_header*)p;
 			const struct fat_arch* archs = (struct fat_arch*)(p + sizeof(struct fat_header));
-			for (unsigned long i=0; i < OSSwapBigToHostInt32(fh->nfat_arch); ++i) {
+			for (ULONG_PTR_ i=0; i < OSSwapBigToHostInt32(fh->nfat_arch); ++i) {
 				size_t offset = OSSwapBigToHostInt32(archs[i].offset);
 				size_t size = OSSwapBigToHostInt32(archs[i].size);
 				cpu_type_t cputype = OSSwapBigToHostInt32(archs[i].cputype);

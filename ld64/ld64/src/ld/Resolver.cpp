@@ -122,7 +122,7 @@ public:
 	virtual uint64_t					objectAddress() const { return _aliasOf.objectAddress(); }
 	virtual void						copyRawContent(uint8_t buffer[]) const { }
 	virtual const uint8_t*				rawContentPointer() const { return NULL; }
-	virtual unsigned long				contentHash(const class ld::IndirectBindingTable& ibt) const 
+	virtual ULONG_PTR_				contentHash(const class ld::IndirectBindingTable& ibt) const 
 															{ return _aliasOf.contentHash(ibt);  }
 	virtual bool						canCoalesceWith(const ld::Atom& rhs, const class ld::IndirectBindingTable& ibt) const 
 															{ return _aliasOf.canCoalesceWith(rhs,ibt); }

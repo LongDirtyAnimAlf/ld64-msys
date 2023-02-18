@@ -27,7 +27,7 @@ be guaranteed to generate the wrong hash (e.g. Test Vector #3, a million
 "a"s).
 
 I also changed the declaration of variables i & j in SHA1Update to
-unsigned long from unsigned int for the same reason.
+ULONG_PTR_ from unsigned int for the same reason.
 
 These changes should make no difference to any 32 bit implementations since
 an

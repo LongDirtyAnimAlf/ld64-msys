@@ -38,21 +38,13 @@ extern "C" {
 extern char *getsectdata(
     const char *segname,
     const char *sectname,
-#if defined(_WIN64)
-    unsigned long long *size);
-#else
     unsigned long *size);
-#endif
 
 extern char *getsectdatafromFramework(
     const char *FrameworkName,
     const char *segname,
     const char *sectname,
-#if defined(_WIN64)
-    unsigned long long *size);
-#else
     unsigned long *size);
-#endif
 
 #if defined(_WIN64)
 extern unsigned long long get_end(void);
@@ -98,11 +90,7 @@ extern uint8_t *getsectiondata(
     const struct mach_header_64 *mhp,
     const char *segname,
     const char *sectname,
-#if defined(_WIN64)
-    unsigned long long *size);
-#else
     unsigned long *size);
-#endif
 
 extern const struct segment_command_64 *getsegbyname(
     const char *segname);
@@ -110,11 +98,7 @@ extern const struct segment_command_64 *getsegbyname(
 extern uint8_t *getsegmentdata(
     const struct mach_header_64 *mhp,
     const char *segname,
-#if defined(_WIN64)
-    unsigned long long *size);
-#else
     unsigned long *size);
-#endif
 
 #endif /* defined(__LP64__) */
 

@@ -105,11 +105,7 @@ extern void * NSGetSectionDataInObjectFileImage(
     NSObjectFileImage objectFileImage,
     const char *segmentName,
     const char *sectionName,
-#if defined(_WIN64)
-    unsigned long long *size);     /* can be NULL */
-#else
     unsigned long *size);     /* can be NULL */
-#endif
 
 /* SPI first appeared in Mac OS X 10.3 */
 extern enum DYLD_BOOL NSHasModInitObjectFileImage(

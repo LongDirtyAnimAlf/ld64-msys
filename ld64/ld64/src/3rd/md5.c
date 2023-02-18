@@ -90,7 +90,7 @@ main()
 {
     int i;
     for (i = 1; i <= 64; ++i) {
-	unsigned long v = (unsigned long)(4294967296.0 * fabs(sin((double)i)));
+	ULONG_PTR_ v = (ULONG_PTR_)(4294967296.0 * fabs(sin((double)i)));
 	printf("#define T%d 0x%08lx\n", i, v);
     }
     return 0;

@@ -1174,7 +1174,7 @@ public:
 	virtual uint64_t						size() const = 0;
 	virtual void							copyRawContent(uint8_t buffer[]) const = 0;
 	virtual const uint8_t*					rawContentPointer() const { return NULL; }
-	virtual unsigned long					contentHash(const class IndirectBindingTable&) const { return 0; }
+	virtual ULONG_PTR_					contentHash(const class IndirectBindingTable&) const { return 0; }
 	virtual bool							canCoalesceWith(const Atom& rhs, const class IndirectBindingTable&) const { return false; }
 	virtual Fixup::iterator					fixupsBegin() const	{ return NULL; }
 	virtual Fixup::iterator					fixupsEnd() const	{ return NULL; }

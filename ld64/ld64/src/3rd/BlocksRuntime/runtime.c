@@ -100,9 +100,9 @@ static bool isGC = false;
  */
 
 #if 0
-static unsigned long int latching_incr_long(unsigned long int *where) {
+static ULONG_PTR_ int latching_incr_long(ULONG_PTR_ int *where) {
     while (1) {
-        unsigned long int old_value = *(volatile unsigned long int *)where;
+        ULONG_PTR_ int old_value = *(volatile ULONG_PTR_ int *)where;
         if ((old_value & BLOCK_REFCOUNT_MASK) == BLOCK_REFCOUNT_MASK) {
             return BLOCK_REFCOUNT_MASK;
         }
@@ -126,9 +126,9 @@ static int latching_incr_int(int *where) {
 }
 
 #if 0
-static int latching_decr_long(unsigned long int *where) {
+static int latching_decr_long(ULONG_PTR_ int *where) {
     while (1) {
-        unsigned long int old_value = *(volatile int *)where;
+        ULONG_PTR_ int old_value = *(volatile int *)where;
         if ((old_value & BLOCK_REFCOUNT_MASK) == BLOCK_REFCOUNT_MASK) {
             return BLOCK_REFCOUNT_MASK;
         }
@@ -166,7 +166,7 @@ static int latching_decr_int(int *where) {
 #endif /* if 0 */
 
 
-static void *_Block_alloc_default(const unsigned long size, const bool initialCountIsOne, const bool isObject) {
+static void *_Block_alloc_default(const ULONG_PTR_ size, const bool initialCountIsOne, const bool isObject) {
     return malloc(size);
 }
 
@@ -191,11 +191,11 @@ static void _Block_assign_weak_default(const void *ptr, void *dest) {
     *(void **)dest = (void *)ptr;
 }
 
-static void _Block_memmove_default(void *dst, void *src, unsigned long size) {
+static void _Block_memmove_default(void *dst, void *src, ULONG_PTR_ size) {
     memmove(dst, src, (size_t)size);
 }
 
-static void _Block_memmove_gc_broken(void *dest, void *src, unsigned long size) {
+static void _Block_memmove_gc_broken(void *dest, void *src, ULONG_PTR_ size) {
     void **destp = (void **)dest;
     void **srcp = (void **)src;
     while (size) {
@@ -210,14 +210,14 @@ static void _Block_memmove_gc_broken(void *dest, void *src, unsigned long size) 
  * GC support callout functions - initially set to stub routines:
  */
 
-static void *(*_Block_allocator)(const unsigned long, const bool isOne, const bool isObject) = _Block_alloc_default;
+static void *(*_Block_allocator)(const ULONG_PTR_, const bool isOne, const bool isObject) = _Block_alloc_default;
 static void (*_Block_deallocator)(const void *) = (void (*)(const void *))free;
 static void (*_Block_assign)(void *value, void **destptr) = _Block_assign_default;
 static void (*_Block_setHasRefcount)(const void *ptr, const bool hasRefcount) = _Block_setHasRefcount_default;
 static void (*_Block_retain_object)(const void *ptr) = _Block_retain_object_default;
 static void (*_Block_release_object)(const void *ptr) = _Block_release_object_default;
 static void (*_Block_assign_weak)(const void *dest, void *ptr) = _Block_assign_weak_default;
-static void (*_Block_memmove)(void *dest, void *src, unsigned long size) = _Block_memmove_default;
+static void (*_Block_memmove)(void *dest, void *src, ULONG_PTR_ size) = _Block_memmove_default;
 
 
 /*
@@ -228,11 +228,11 @@ static void (*_Block_memmove)(void *dest, void *src, unsigned long size) = _Bloc
  * Called from objc-auto to turn on GC.
  * version 3, 4 arg, but changed 1st arg
  */
-void _Block_use_GC( void *(*alloc)(const unsigned long, const bool isOne, const bool isObject),
+void _Block_use_GC( void *(*alloc)(const ULONG_PTR_, const bool isOne, const bool isObject),
                     void (*setHasRefcount)(const void *, const bool),
                     void (*gc_assign)(void *, void **),
                     void (*gc_assign_weak)(const void *, void *),
-                    void (*gc_memmove)(void *, void *, unsigned long)) {
+                    void (*gc_memmove)(void *, void *, ULONG_PTR_)) {
 
     isGC = true;
     _Block_allocator = alloc;
@@ -251,7 +251,7 @@ void _Block_use_GC( void *(*alloc)(const unsigned long, const bool isOne, const 
 }
 
 /* transitional */
-void _Block_use_GC5( void *(*alloc)(const unsigned long, const bool isOne, const bool isObject),
+void _Block_use_GC5( void *(*alloc)(const ULONG_PTR_, const bool isOne, const bool isObject),
                     void (*setHasRefcount)(const void *, const bool),
                     void (*gc_assign)(void *, void **),
                     void (*gc_assign_weak)(const void *, void *)) {
@@ -327,7 +327,7 @@ static void *_Block_copy_internal(const void *arg, const int flags) {
     else {
         // Under GC want allocation with refcount 1 so we ask for "true" if wantsOne
         // This allows the copy helper routines to make non-refcounted block copies under GC
-        unsigned long int flags = aBlock->flags;
+        ULONG_PTR_ int flags = aBlock->flags;
         bool hasCTOR = (flags & BLOCK_HAS_CTOR) != 0;
         struct Block_layout *result = _Block_allocator(aBlock->descriptor->size, wantsOne, hasCTOR);
         if (!result) return (void *)0;
@@ -510,7 +510,7 @@ void *_Block_copy_collectable(const void *aBlock) {
 
 
 // SPI
-unsigned long int Block_size(void *arg) {
+ULONG_PTR_ int Block_size(void *arg) {
     return ((struct Block_layout *)arg)->descriptor->size;
 }
 

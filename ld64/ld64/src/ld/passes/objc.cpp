@@ -363,7 +363,7 @@ public:
 															{ _atom->copyRawContent(buffer); }
 	virtual const uint8_t*				rawContentPointer() const
 															{ return _atom->rawContentPointer(); }
-	virtual unsigned long				contentHash(const class ld::IndirectBindingTable& ibt) const
+	virtual ULONG_PTR_				contentHash(const class ld::IndirectBindingTable& ibt) const
 															{ return _atom->contentHash(ibt); }
 	virtual bool						canCoalesceWith(const ld::Atom& rhs, const class ld::IndirectBindingTable& ibt) const
 															{ return _atom->canCoalesceWith(rhs,ibt); }

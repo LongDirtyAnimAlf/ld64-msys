@@ -73,26 +73,26 @@ private:
 
 
 namespace {
-    typedef std::unordered_map<const ld::Atom*, unsigned long> CachedHashes;
+    typedef std::unordered_map<const ld::Atom*, ULONG_PTR_> CachedHashes;
 
     ld::Internal*   sState = nullptr;
     CachedHashes    sSavedHashes;
-    unsigned long   sHashCount = 0;
-    unsigned long   sFixupCompareCount = 0;
+    ULONG_PTR_   sHashCount = 0;
+    ULONG_PTR_   sFixupCompareCount = 0;
 };
 
 
 // A helper for std::unordered_map<> that hashes the instructions of a function
 struct atom_hashing {
 
-    static unsigned long hash(const ld::Atom* atom) {
+    static ULONG_PTR_ hash(const ld::Atom* atom) {
         auto pos = sSavedHashes.find(atom);
         if ( pos != sSavedHashes.end() )
             return pos->second;
 
         const unsigned instructionBytes = atom->size();
         const uint8_t*	instructions = atom->rawContentPointer();
-        unsigned long hash = instructionBytes;
+        ULONG_PTR_ hash = instructionBytes;
         for (unsigned i=0; i < instructionBytes; ++i) {
             hash = (hash * 33) + instructions[i];
         }
@@ -133,7 +133,7 @@ struct atom_hashing {
         return hash;
     }
 
-    unsigned long operator()(const ld::Atom* atom) const {
+    ULONG_PTR_ operator()(const ld::Atom* atom) const {
         return hash(atom);
     }
 };

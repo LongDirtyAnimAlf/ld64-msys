@@ -195,7 +195,7 @@ public:
 															{ if (_compiledAtom) _compiledAtom->copyRawContent(buffer); }
 	const uint8_t*				rawContentPointer() const override
 															{ return (_compiledAtom ? _compiledAtom->rawContentPointer() : NULL);  }
-	unsigned long				contentHash(const class ld::IndirectBindingTable& ibt) const override
+	ULONG_PTR_				contentHash(const class ld::IndirectBindingTable& ibt) const override
 															{ return (_compiledAtom ? _compiledAtom->contentHash(ibt) : 0);  }
 	bool						canCoalesceWith(const ld::Atom& rhs, const class ld::IndirectBindingTable& ibt) const override
 															{ return (_compiledAtom ? _compiledAtom->canCoalesceWith(rhs,ibt) : false); }

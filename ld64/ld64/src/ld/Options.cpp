@@ -2222,7 +2222,7 @@ void Options::addSectionAlignment(const char* segment, const char* section, cons
 
 	// argument to -sectalign is a hexadecimal number
 	char* endptr;
-	unsigned long value = strtoul(alignmentStr, &endptr, 16);
+	ULONG_PTR_ value = strtoul(alignmentStr, &endptr, 16);
 	if ( *endptr != '\0')
 		throw "argument for -sectalign is not a hexadecimal number";
 	if ( value > 0x8000 )
@@ -2234,7 +2234,7 @@ void Options::addSectionAlignment(const char* segment, const char* section, cons
 
 	// alignment is power of 2 (e.g. page alignment = 12)
 	uint8_t alignment = (uint8_t)__builtin_ctz(value);
-	if ( (unsigned long)(1 << alignment) != value ) {
+	if ( (ULONG_PTR_)(1 << alignment) != value ) {
 		warning("alignment for -sectalign %s %s is not a power of two, using 0x%X",
 			segment, section, 1 << alignment);
 	}
@@ -4133,7 +4133,7 @@ void Options::parse(int argc, const char* argv[])
 					throw "-max_default_common_align missing <align-value>";
 				// argument is a hexadecimal number
 				char* endptr;
-				unsigned long value = strtoul(alignStr, &endptr, 16);
+				ULONG_PTR_ value = strtoul(alignStr, &endptr, 16);
 				if ( *endptr != '\0')
 					throw "argument for -max_default_common_align is not a hexadecimal number";
 				if ( value > 0x8000 )
@@ -4144,7 +4144,7 @@ void Options::parse(int argc, const char* argv[])
 				}
 				// alignment is power of 2 
 				uint8_t alignment = (uint8_t)__builtin_ctz(value);
-				if ( (unsigned long)(1 << alignment) != value ) {
+				if ( (ULONG_PTR_)(1 << alignment) != value ) {
 					warning("alignment for -max_default_common_align is not a power of two, using 0x%X", 1 << alignment);
 				}
 				fMaxDefaultCommonAlign = alignment;
