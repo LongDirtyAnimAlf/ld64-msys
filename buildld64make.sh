@@ -112,7 +112,11 @@ echo ""
 mkdir -p build-ld64-make
 pushd build-ld64-make &>/dev/null
 # $GNUMAKE distclean
-./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition"
+if [ "$OSTYPE" == "msys" ]; then
+  ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition"
+else
+  ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition" LDFLAGS="-Wl,-rpath,\\\$\$ORIGIN/../lib,--enable-new-dtags"
+fi
 # $GNUMAKE clean
 $GNUMAKE -j$JOBS
 $GNUMAKE install

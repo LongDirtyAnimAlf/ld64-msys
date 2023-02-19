@@ -19099,12 +19099,8 @@ fi
     CXXFLAGS="$CXXFLAGS -isystem $LIBTAPI_DIR/include"
     CPPFLAGS="$CPPFLAGS -isystem $LIBTAPI_DIR/include"
     test -d "$LIBTAPI_DIR/lib" && LDFLAGS="$LDFLAGS -L$LIBTAPI_DIR/lib"
-    test -d "$LIBTAPI_DIR/lib64" && LDFLAGS="$LDFLAGS -L$LIBTAPI_DIR/lib64"
-    test -d "$LIBTAPI_DIR/lib32" && LDFLAGS="$LDFLAGS -L$LIBTAPI_DIR/lib32"
     if test "x$rpathlink" = "xyes"; then
       LIBTAPI_RPATH="-Wl,-rpath,$LIBTAPI_DIR/lib,--enable-new-dtags"
-      LIBTAPI_RPATH="$LIBTAPI_RPATH -Wl,-rpath,$LIBTAPI_DIR/lib64,--enable-new-dtags"
-      LIBTAPI_RPATH="$LIBTAPI_RPATH -Wl,-rpath,$LIBTAPI_DIR/lib32,--enable-new-dtags"
       LDFLAGS="$LDFLAGS $LIBTAPI_RPATH"
     fi
     if test "x$isdarwin" = "xyes"; then
