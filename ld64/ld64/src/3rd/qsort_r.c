@@ -55,7 +55,7 @@ flsl(long mask)
     if (mask == 0)
         return (0);
     for (bit = 1; mask != 1; bit++)
-        mask = (ULONG_PTR_)mask >> 1;
+        mask = (unsigned long)mask >> 1;
     return (bit);
 }
 
@@ -296,11 +296,11 @@ __unused
               :(CMP(thunk, b, c) > 0 ? b : (CMP(thunk, a, c) < 0 ? a : c ));
 }
 
-#if defined(__LP64__)
+#ifdef __LP64__
 #define DEPTH(x)    (2 * (flsl((long)(x)) - 1))
-#else
+#else /* !__LP64__ */
 #define DEPTH(x)    (2 * (fls((int)(x)) - 1))
-#endif
+#endif /* __LP64__ */
 
 #ifdef I_AM_QSORT_R
 int __heapsort_r(void *, size_t, size_t, void *, int (*)(void *, const void *, const void *));
@@ -436,5 +436,5 @@ qsort(void *a, size_t n, size_t es, cmp_t *cmp)
 #endif
         cmp, DEPTH(n));
 }
-
 #endif
+

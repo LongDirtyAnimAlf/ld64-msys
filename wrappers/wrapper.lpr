@@ -301,73 +301,80 @@ begin
     end;
 
     aSDKPath:='';
-    aSDKPathBase:=ResolveDots(aExePath+'..\..\..\lib\');
+    aSDKPathBase:=ResolveDots(aExePath+'..'+PathDelim+'..'+PathDelim+'..'+PathDelim+'lib'+PathDelim);
+    writeln('A 1 syslibroot was found and added: '+aSDKPathBase);
     if DirectoryExists(aSDKPathBase) then
     begin
       {$if defined(amd64_darwin) OR defined(arm64_darwin) OR defined(i386_darwin)}
       {$if DECLARED(SDKDIR_12)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin\'+SDKDIR_12;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+SDKDIR_12;
       {$endif}
       {$if DECLARED(SDKDIR)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin\'+SDKDIR;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+SDKDIR;
+    writeln('A 2 syslibroot was found and added: '+aSDKPath);
       {$endif}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin\SDK';
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin';
       {$if DECLARED(SDKDIR)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin\'+SDKDIR;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin'+PathDelim+SDKDIR;
       {$endif}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin\SDK';
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:='';
       {$endif}
       {$if defined(arm64_ios) OR defined(arm_ios)}
       {$if DECLARED(SDKDIR)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios\'+SDKDIR;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios'+PathDelim+SDKDIR;
       {$endif}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios\SDK';
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios';
       {$if DECLARED(SDKDIR)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios\'+SDKDIR;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios'+PathDelim+SDKDIR;
       {$endif}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios\SDK';
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:='';
       {$endif}
     end;
 
-    aSDKPathBase:=ResolveDots(aExePath+'..\..\lib\');
+    aSDKPathBase:=ResolveDots(aExePath+'..'+PathDelim+'..'+PathDelim+'lib'+PathDelim);
+    writeln('A 3 syslibroot was found and added: '+aSDKPathBase);
     if DirectoryExists(aSDKPathBase) then
     begin
       {$if defined(amd64_darwin) OR defined(arm64_darwin) OR defined(i386_darwin)}
       {$if DECLARED(SDKDIR_12)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin\'+SDKDIR_12;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+SDKDIR_12;
       {$endif}
       {$if DECLARED(SDKDIR)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin\'+SDKDIR;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+SDKDIR;
+    writeln('A 4 syslibroot was found and added: '+aSDKPath);
       {$endif}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin\SDK';
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin';
       {$if DECLARED(SDKDIR)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin\'+SDKDIR;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin'+PathDelim+SDKDIR;
       {$endif}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin\SDK';
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-darwin';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:='';
       {$endif}
       {$if defined(arm64_ios) OR defined(arm_ios)}
       {$if DECLARED(SDKDIR)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios\'+SDKDIR;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios'+PathDelim+SDKDIR;
       {$endif}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios\SDK';
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-ios';
       {$if DECLARED(SDKDIR)}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios\'+SDKDIR;
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios'+PathDelim+SDKDIR;
       {$endif}
-      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios\SDK';
+      if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+TARGETCPU+'-ios';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:='';
       {$endif}
     end;
+    
+    writeln('A 5 syslibroot was found and added: '+aSDKPath);
+
 
     for i:=1 to ParamCount() do APRocess.Parameters.Append(ParamStr(i));
 
@@ -397,7 +404,7 @@ begin
         begin
           APRocess.Parameters.Append(aParamName);
           APRocess.Parameters.Append(aSDKPath);
-          //writeln('A syslibroot was found and added: '+aSDKPath);
+          writeln('A 6 syslibroot was found and added: '+aSDKPath);
         end;
       end;
     end;
