@@ -302,7 +302,6 @@ begin
 
     aSDKPath:='';
     aSDKPathBase:=ResolveDots(aExePath+'..'+PathDelim+'..'+PathDelim+'..'+PathDelim+'lib'+PathDelim);
-    writeln('A 1 syslibroot was found and added: '+aSDKPathBase);
     if DirectoryExists(aSDKPathBase) then
     begin
       {$if defined(amd64_darwin) OR defined(arm64_darwin) OR defined(i386_darwin)}
@@ -311,7 +310,6 @@ begin
       {$endif}
       {$if DECLARED(SDKDIR)}
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+SDKDIR;
-    writeln('A 2 syslibroot was found and added: '+aSDKPath);
       {$endif}
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin';
@@ -338,7 +336,6 @@ begin
     end;
 
     aSDKPathBase:=ResolveDots(aExePath+'..'+PathDelim+'..'+PathDelim+'lib'+PathDelim);
-    writeln('A 3 syslibroot was found and added: '+aSDKPathBase);
     if DirectoryExists(aSDKPathBase) then
     begin
       {$if defined(amd64_darwin) OR defined(arm64_darwin) OR defined(i386_darwin)}
@@ -347,7 +344,6 @@ begin
       {$endif}
       {$if DECLARED(SDKDIR)}
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+SDKDIR;
-    writeln('A 4 syslibroot was found and added: '+aSDKPath);
       {$endif}
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin'+PathDelim+'SDK';
       if NOT DirectoryExists(aSDKPath) then aSDKPath:=aSDKPathBase+'all-darwin';
@@ -372,9 +368,6 @@ begin
       if NOT DirectoryExists(aSDKPath) then aSDKPath:='';
       {$endif}
     end;
-    
-    writeln('A 5 syslibroot was found and added: '+aSDKPath);
-
 
     for i:=1 to ParamCount() do APRocess.Parameters.Append(ParamStr(i));
 
@@ -404,7 +397,7 @@ begin
         begin
           APRocess.Parameters.Append(aParamName);
           APRocess.Parameters.Append(aSDKPath);
-          writeln('A 6 syslibroot was found and added: '+aSDKPath);
+          //writeln('A syslibroot was found and added: '+aSDKPath);
         end;
       end;
     end;
