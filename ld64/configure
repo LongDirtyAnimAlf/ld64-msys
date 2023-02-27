@@ -19144,6 +19144,10 @@ then :
 else $as_nop
   cctools_cv_tapi_support=no
 fi
+# Do not fail on Darwin itself !
+if test "x$isdarwin" = "xyes"; then
+  cctools_cv_tapi_support=yes
+fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext
     LIBS="$save_LIBS"
