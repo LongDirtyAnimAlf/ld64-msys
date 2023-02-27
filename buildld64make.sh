@@ -100,10 +100,8 @@ SDKDIR="$TARGETDIR/SDK"
 
 mkdir -p $TARGETDIR
 mkdir -p $TARGETDIR/bin
+mkdir -p $TARGETDIR/include
 mkdir -p $SDKDIR
-
-# export CC="$TARGETDIR/bin/clang"
-# export CXX="$TARGETDIR/bin/clang++"
 
 echo ""
 echo "*** building ld64 ***"
@@ -111,12 +109,31 @@ echo ""
 
 mkdir -p build-ld64-make
 pushd build-ld64-make &>/dev/null
+
+case "$OPERATING_SYSTEM" in
+  Darwin*)
+    echo "*** copy tapi headers ***"
+    mkdir -p $TARGETDIR/include/tapi
+    cp /APIVersion.h $TARGETDIR/include/tapi
+    cp /Defines.h $TARGETDIR/include/tapi
+    cp /LinkerInterfaceFile.h $TARGETDIR/include/tapi
+    cp /PackedVersion32.h $TARGETDIR/include/tapi
+    cp /Symbol.h $TARGETDIR/include/tapi
+    cp /tapi.h $TARGETDIR/include/tapi
+    cp /Version.h $TARGETDIR/include/tapi
+    cp /Version.inc $TARGETDIR/include/tapi
+    # ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=/Library/Developer/CommandLineTools/usr CXXFLAGS="-I$TARGETDIR/include -Wl,-L$TARGETDIR/lib"
+    ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-I$TARGETDIR/include -Wl,-L$TARGETDIR/lib,-L/Library/Developer/CommandLineTools/usr"
+  ;;
+  msys*)
+    ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition"
+  ;;
+  *)
+    ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition" LDFLAGS="-Wl,-rpath,\\\$\$ORIGIN/../lib,--enable-new-dtags"
+  ;;
+esac
+
 # $GNUMAKE distclean
-if [ "$OSTYPE" == "msys" ]; then
-  ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition"
-else
-  ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition" LDFLAGS="-Wl,-rpath,\\\$\$ORIGIN/../lib,--enable-new-dtags"
-fi
 # $GNUMAKE clean
 $GNUMAKE -j$JOBS
 $GNUMAKE install

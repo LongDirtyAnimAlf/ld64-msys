@@ -28,7 +28,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <sys/param.h>
-#ifdef __CYGWIN__
+#if defined(__APPLE__) || defined(__CYGWIN__)
 #include <sys/mount.h>
 #endif
 #include <signal.h> // ld64-port

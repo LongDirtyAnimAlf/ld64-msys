@@ -18,7 +18,10 @@ C_COMPILER="clang"
 CXX_COMPILER="clang++"
 
 case "$OSTYPE" in
-  darwin*)  CMAKE_GENERATOR=-G"Xcode" ;;
+  darwin*)
+            export PATH="/Applications/CMake.app/Contents/bin":"$PATH"
+            CMAKE_GENERATOR=-G"Unix Makefiles"
+  ;;
   linux*)   CMAKE_GENERATOR=-G"Unix Makefiles" ;;
   bsd*)     CMAKE_GENERATOR=-G"Unix Makefiles" ;;
   cygwin*)
