@@ -3218,9 +3218,9 @@ CXXVERSION="`$CXX --version`"
 case "$CCVERSION" in
   *clang* )
     WARNINGS="$WARNINGS -Wall -Wno-long-long -Wno-import -Wno-format -Wno-deprecated -Wno-unused-variable"
-    WARNINGS="$WARNINGS -Wno-unused-private-field -Wno-unused-function -Wno-invalid-offsetof"
+    WARNINGS="$WARNINGS -Wno-unused-private-field -Wno-unused-function -Wno-invalid-offsetof -Wno-unknown-warning-option"
     WARNINGS="$WARNINGS -Wno-int-conversion -Wno-char-subscripts -Wno-missing-braces -Wno-macro-redefined"
-    WARNINGS="$WARNINGS -Wno-unused-command-line-argument -Wno-unused-but-set-variable"
+    WARNINGS="$WARNINGS -Wno-unused-command-line-argument -Wno-unused-but-set-variable -Wno-ignored-attributes"
     OBJCWARNINGS="-Wall -Wno-objc-root-class -Wno-deprecated-objc-isa-usage"
   ;;
   * )

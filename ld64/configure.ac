@@ -88,9 +88,9 @@ CXXVERSION="`$CXX --version`"
 case "$CCVERSION" in
   *clang* )
     WARNINGS="$WARNINGS -Wall -Wno-long-long -Wno-import -Wno-format -Wno-deprecated -Wno-unused-variable"
-    WARNINGS="$WARNINGS -Wno-unused-private-field -Wno-unused-function -Wno-invalid-offsetof"
+    WARNINGS="$WARNINGS -Wno-unused-private-field -Wno-unused-function -Wno-invalid-offsetof -Wno-unknown-warning-option"
     WARNINGS="$WARNINGS -Wno-int-conversion -Wno-char-subscripts -Wno-missing-braces -Wno-macro-redefined"
-    WARNINGS="$WARNINGS -Wno-unused-command-line-argument -Wno-unused-but-set-variable"
+    WARNINGS="$WARNINGS -Wno-unused-command-line-argument -Wno-unused-but-set-variable -Wno-ignored-attributes"
     OBJCWARNINGS="-Wall -Wno-objc-root-class -Wno-deprecated-objc-isa-usage"
   ;;
   * )
@@ -441,7 +441,10 @@ if test "x$enable_tapi_support" = "xyes"; then
     LIBS="$save_LIBS"
     AC_LANG_POP([C++])
   )
-
+  # Do not fail on Darwin itself
+  if test "x$isdarwin" = "xyes"; then
+    cctools_cv_tapi_support=yes
+  fi
   if test $cctools_cv_tapi_support = yes; then
     TAPI_LIB=-ltapi
     TAPI_DEF=-DTAPI_SUPPORT
