@@ -180,6 +180,8 @@ am__define_uniq_tagged_files = \
   unique=`for i in $$list; do \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
+ETAGS = etags
+CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -197,8 +199,6 @@ CCAS = @CCAS@
 CCASFLAGS = @CCASFLAGS@
 CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
-CSCOPE = @CSCOPE@
-CTAGS = @CTAGS@
 CXX = @CXX@
 CXXABI_LIB = @CXXABI_LIB@
 CXXCPP = @CXXCPP@
@@ -215,12 +215,11 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 ENDIAN_FLAG = @ENDIAN_FLAG@
-ETAGS = @ETAGS@
 EXECINFO_LIB = @EXECINFO_LIB@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FILECMD = @FILECMD@
 FTS_LIB = @FTS_LIB@
+GCC_LIB = @GCC_LIB@
 GREP = @GREP@
 HOST_AR = @HOST_AR@
 HOST_RANLIB = @HOST_RANLIB@
@@ -560,6 +559,7 @@ cscopelist-am: $(am__tagged_files)
 
 distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
+
 distdir: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) distdir-am
 

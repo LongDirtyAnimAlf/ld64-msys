@@ -444,8 +444,4 @@ int64_t OSAtomicAdd64(int64_t __theAmount, volatile int64_t *__theValue)
    return __sync_fetch_and_add(__theValue, __theAmount);
 }
 
-
-
-
-
 #endif /* __APPLE__ */

@@ -57,7 +57,7 @@ struct v128 { unsigned int vec[4]; };
 		static_assert(expr, "");
 // ld64-port end
 
-#define ABORT(msg) __assert_rtn(__func__, __FILE__, __LINE__, msg)
+#define ABORT(msg) __assert_rtn(__func__, __FILE__, __LINE__, msg) 
 
 #if NDEBUG
 	#define DEBUG_MESSAGE(msg, ...)  

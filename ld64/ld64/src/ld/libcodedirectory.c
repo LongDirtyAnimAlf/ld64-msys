@@ -423,8 +423,6 @@ struct {								\
 #endif
 #endif
 
-//#include <cerrno>
-
 /* As of the time of writing this, code signing always uses
  * 4096 byte pages, even on devices with higher native page
  * size. */
