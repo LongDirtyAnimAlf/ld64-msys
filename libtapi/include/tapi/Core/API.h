@@ -355,7 +355,7 @@ public:
   const ObjCProtocolRecord *findObjCProtocol(StringRef) const;
   const ObjCCategoryRecord *findObjCCategory(StringRef, StringRef) const;
 
-  bool hasBinaryInfo() const { return binaryInfo.has_value(); }
+  bool hasBinaryInfo() const { return binaryInfo.hasValue(); }
   BinaryInfo &getBinaryInfo();
   const BinaryInfo &getBinaryInfo() const {
     assert(hasBinaryInfo() && "must have binary info");
