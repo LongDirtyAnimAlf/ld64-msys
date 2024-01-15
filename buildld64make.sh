@@ -64,12 +64,12 @@ echo ""
 mkdir -p build-ld64-make
 pushd build-ld64-make &>/dev/null
 
-case "$PLATFORM" in
-  Darwin)
+case "$OSTYPE" in
+  darwin)
     ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=/Library/Developer/CommandLineTools/usr CXXFLAGS="-I$TARGETDIR/include -Wl,-L$TARGETDIR/lib"
     # ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-I$TARGETDIR/include -Wl,-L$TARGETDIR/lib,-L/Library/Developer/CommandLineTools/usr/lib"
   ;;
-  Msys*)
+  msys*)
     ./../ld64/configure --prefix=$TARGETDIR --with-libtapi=$TARGETDIR CXXFLAGS="-Wl,--allow-multiple-definition"
   ;;
   *)

@@ -1,0 +1,2306 @@
+--- include/tapi/APIVerifier/APIVerifier.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/APIVerifier/APIVerifier.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Config/Version.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Config/Version.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/API.h	Thu May 11 10:58:13 2023
++++ include/tapi/Core/API.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/APICommon.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/APICommon.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/APIJSONSerializer.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/APIJSONSerializer.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/APIPrinter.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/APIPrinter.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/APIVisitor.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/APIVisitor.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/Architecture.def	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/Architecture.def	Wed Oct  6 06:39:00 2021
+@@ -63,14 +63,10 @@
+ 
+ 
+ ///
+-/// ARM64, ARM64E architectures sorted by cpu sub type id.
++/// ARM64 architectures sorted by cpu sub type id.
+ ///
+ 
+ #ifdef SUPPORT_ARCH_ARM64
+ ARCHINFO(arm64, MachO::CPU_TYPE_ARM64, MachO::CPU_SUBTYPE_ARM64_ALL)
+ #endif
+ 
+-
+-#ifdef SUPPORT_ARCH_ARM64E
+-ARCHINFO(arm64e, MachO::CPU_TYPE_ARM64, MachO::CPU_SUBTYPE_ARM64E)
+-#endif
+--- include/tapi/Core/Architecture.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/Architecture.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/ArchitectureSet.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/ArchitectureSet.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/AvailabilityInfo.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/AvailabilityInfo.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/Context.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/Context.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/FileListReader.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/FileListReader.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/FileManager.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/FileManager.h	Wed Oct  6 06:39:00 2021
+@@ -54,7 +54,7 @@
+ 
+   /// \brief Check if a particular path is a directory.
+   bool isDirectory(StringRef path, bool CacheFailure = true) {
+-    return (!getDirectory(path, CacheFailure));
++    return getDirectory(path, CacheFailure) != nullptr;
+   }
+ 
+   /// \brief Check if a particular path is a symlink using directory_iterator.
+--- include/tapi/Core/FileSystem.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/FileSystem.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/Framework.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/Framework.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/HeaderFile.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/HeaderFile.h	Wed Oct  6 06:39:00 2021
+@@ -18,7 +18,6 @@
+ #include "tapi/Core/LLVM.h"
+ #include "tapi/Defines.h"
+ #include "llvm/ADT/StringRef.h"
+-#include <vector>
+ #include <string>
+ 
+ TAPI_NAMESPACE_INTERNAL_BEGIN
+--- include/tapi/Core/InterfaceFile.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/InterfaceFile.h	Wed Oct  6 06:39:00 2021
+@@ -207,7 +207,7 @@
+     return mapToArchitectureSet(_targets);
+   }
+ 
+-  void setInstallName(StringRef installName) { _installName = installName.str(); }
++  void setInstallName(StringRef installName) { _installName = installName; }
+   StringRef getInstallName() const { return _installName; }
+ 
+   void setCurrentVersion(PackedVersion version) { _currentVersion = version; }
+--- include/tapi/Core/InterfaceFileManager.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/InterfaceFileManager.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/LLVM.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/LLVM.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/MachODylibReader.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/MachODylibReader.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/MachOReader.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/MachOReader.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/PackedVersion.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/PackedVersion.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/Path.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/Path.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/Platform.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/Platform.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/ReexportFileWriter.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/ReexportFileWriter.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/Registry.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/Registry.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/TapiError.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/TapiError.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/Target.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/Target.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/TextStub.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/TextStub.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/TextStubCommon.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/TextStubCommon.h	Wed Oct  6 06:39:00 2021
+@@ -91,8 +91,8 @@
+ };
+ 
+ using clang::InputKind;
+-template <> struct ScalarEnumerationTraits<clang::Language> {
+-  static void enumeration(IO &io, clang::Language &kind);
++template <> struct ScalarEnumerationTraits<InputKind::Language> {
++  static void enumeration(IO &io, InputKind::Language &kind);
+ };
+ 
+ } // end namespace yaml.
+--- include/tapi/Core/Utils.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/Utils.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/XPI.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/XPI.h	Wed Oct  6 06:39:00 2021
+@@ -129,7 +129,6 @@
+       return it->second;
+ 
+     return llvm::None;
+-    //return std::nullopt;
+   }
+ 
+   ArchitectureSet getArchitectures() const {
+--- include/tapi/Core/XPISet.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/XPISet.h	Wed Oct  6 06:39:00 2021
+@@ -56,7 +56,7 @@
+   }
+ 
+   static unsigned getHashValue(const SymbolsMapKey &key) {
+-    return detail::combineHashValue(hash_value(key.kind), hash_value(key.name));
++    return combineHashValue(hash_value(key.kind), hash_value(key.name));
+   }
+ 
+   static bool isEqual(const SymbolsMapKey &lhs, const SymbolsMapKey &rhs) {
+--- include/tapi/Core/YAMLReaderWriter.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/YAMLReaderWriter.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Diagnostics/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ include/tapi/Diagnostics/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- include/tapi/Diagnostics/Diagnostics.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Diagnostics/Diagnostics.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Diagnostics/DiagnosticTAPIKinds.td	Fri Feb 17 13:58:47 2023
++++ include/tapi/Diagnostics/DiagnosticTAPIKinds.td	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/Configuration.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/Configuration.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/ConfigurationFile.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/ConfigurationFile.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/DirectoryScanner.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/DirectoryScanner.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/Driver.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/Driver.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/DriverOptions.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/DriverOptions.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/DriverUtils.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/DriverUtils.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/Glob.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/Glob.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/HeaderGlob.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/HeaderGlob.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/Options.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/Options.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/Snapshot.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/Snapshot.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/SnapshotFileSystem.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/SnapshotFileSystem.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/StatRecorder.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/StatRecorder.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Driver/TAPIOptions.td	Fri Feb 17 13:58:47 2023
++++ include/tapi/Driver/TAPIOptions.td	Wed Oct  6 06:39:00 2021
+--- include/tapi/Frontend/Frontend.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Frontend/Frontend.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Frontend/FrontendContext.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Frontend/FrontendContext.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/APIVersion.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/APIVersion.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/CMakeLists.txt	Fri Feb 17 13:58:46 2023
++++ include/tapi/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -1,2 +1,2 @@
+ add_subdirectory(Driver)
+-#add_subdirectory(Diagnostics)
++add_subdirectory(Diagnostics)
+--- include/tapi/Defines.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Defines.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/LinkerInterfaceFile.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/LinkerInterfaceFile.h	Wed Oct  6 06:39:00 2021
+@@ -40,7 +40,7 @@
+ /// \since 1.0
+ /// \deprecated 1.6
+ ///
+-enum class Platform : unsigned __attribute__((deprecated)) {
++enum class Platform : unsigned {
+   /// \brief Unknown platform
+   /// \since 1.0
+   Unknown = 0,
+@@ -78,7 +78,7 @@
+   /// This value is temporary for bringup and will be removed.
+   /// \since 1.4
+   zippered = ~0U,
+-};
++} __attribute__((deprecated));
+ 
+ ///
+ /// \brief Defines a list of Objective-C constraints.
+--- include/tapi/PackedVersion32.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/PackedVersion32.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Symbol.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Symbol.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/tapi.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/tapi.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Version.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Version.h	Wed Oct  6 06:39:00 2021
+--- include/tapi/Version.inc	Mon Dec  7 10:22:48 2020
++++ /dev/null	Thu Jan  1 00:00:00 1970
+@@ -1,4 +0,0 @@
+-#define TAPI_VERSION 11.0.0
+-#define TAPI_VERSION_MAJOR 11U
+-#define TAPI_VERSION_MINOR 0U
+-#define TAPI_VERSION_PATCH 0U
+--- include/tapi/Version.inc.in	Fri Feb 17 13:58:47 2023
++++ include/tapi/Version.inc.in	Wed Oct  6 06:39:00 2021
+--- include/CMakeLists.txt	Fri Feb 17 13:58:46 2023
++++ include/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- include/tapi/Core/Architecture.def	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/Architecture.def	Wed Oct  6 06:39:00 2021
+@@ -63,14 +63,10 @@
+ 
+ 
+ ///
+-/// ARM64, ARM64E architectures sorted by cpu sub type id.
++/// ARM64 architectures sorted by cpu sub type id.
+ ///
+ 
+ #ifdef SUPPORT_ARCH_ARM64
+ ARCHINFO(arm64, MachO::CPU_TYPE_ARM64, MachO::CPU_SUBTYPE_ARM64_ALL)
+ #endif
+ 
+-
+-#ifdef SUPPORT_ARCH_ARM64E
+-ARCHINFO(arm64e, MachO::CPU_TYPE_ARM64, MachO::CPU_SUBTYPE_ARM64E)
+-#endif
+--- include/tapi/Core/FileManager.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/FileManager.h	Wed Oct  6 06:39:00 2021
+@@ -54,7 +54,7 @@
+ 
+   /// \brief Check if a particular path is a directory.
+   bool isDirectory(StringRef path, bool CacheFailure = true) {
+-    return (!getDirectory(path, CacheFailure));
++    return getDirectory(path, CacheFailure) != nullptr;
+   }
+ 
+   /// \brief Check if a particular path is a symlink using directory_iterator.
+--- include/tapi/Core/HeaderFile.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/HeaderFile.h	Wed Oct  6 06:39:00 2021
+@@ -18,7 +18,6 @@
+ #include "tapi/Core/LLVM.h"
+ #include "tapi/Defines.h"
+ #include "llvm/ADT/StringRef.h"
+-#include <vector>
+ #include <string>
+ 
+ TAPI_NAMESPACE_INTERNAL_BEGIN
+--- include/tapi/Core/InterfaceFile.h	Fri Feb 17 13:58:46 2023
++++ include/tapi/Core/InterfaceFile.h	Wed Oct  6 06:39:00 2021
+@@ -207,7 +207,7 @@
+     return mapToArchitectureSet(_targets);
+   }
+ 
+-  void setInstallName(StringRef installName) { _installName = installName.str(); }
++  void setInstallName(StringRef installName) { _installName = installName; }
+   StringRef getInstallName() const { return _installName; }
+ 
+   void setCurrentVersion(PackedVersion version) { _currentVersion = version; }
+--- include/tapi/Core/TextStubCommon.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/TextStubCommon.h	Wed Oct  6 06:39:00 2021
+@@ -91,8 +91,8 @@
+ };
+ 
+ using clang::InputKind;
+-template <> struct ScalarEnumerationTraits<clang::Language> {
+-  static void enumeration(IO &io, clang::Language &kind);
++template <> struct ScalarEnumerationTraits<InputKind::Language> {
++  static void enumeration(IO &io, InputKind::Language &kind);
+ };
+ 
+ } // end namespace yaml.
+--- include/tapi/Core/XPI.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/XPI.h	Wed Oct  6 06:39:00 2021
+@@ -129,7 +129,6 @@
+       return it->second;
+ 
+     return llvm::None;
+-    //return std::nullopt;
+   }
+ 
+   ArchitectureSet getArchitectures() const {
+--- include/tapi/Core/XPISet.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/Core/XPISet.h	Wed Oct  6 06:39:00 2021
+@@ -56,7 +56,7 @@
+   }
+ 
+   static unsigned getHashValue(const SymbolsMapKey &key) {
+-    return detail::combineHashValue(hash_value(key.kind), hash_value(key.name));
++    return combineHashValue(hash_value(key.kind), hash_value(key.name));
+   }
+ 
+   static bool isEqual(const SymbolsMapKey &lhs, const SymbolsMapKey &rhs) {
+--- include/tapi/CMakeLists.txt	Fri Feb 17 13:58:46 2023
++++ include/tapi/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -1,2 +1,2 @@
+ add_subdirectory(Driver)
+-#add_subdirectory(Diagnostics)
++add_subdirectory(Diagnostics)
+--- include/tapi/LinkerInterfaceFile.h	Fri Feb 17 13:58:47 2023
++++ include/tapi/LinkerInterfaceFile.h	Wed Oct  6 06:39:00 2021
+@@ -40,7 +40,7 @@
+ /// \since 1.0
+ /// \deprecated 1.6
+ ///
+-enum class Platform : unsigned __attribute__((deprecated)) {
++enum class Platform : unsigned {
+   /// \brief Unknown platform
+   /// \since 1.0
+   Unknown = 0,
+@@ -78,7 +78,7 @@
+   /// This value is temporary for bringup and will be removed.
+   /// \since 1.4
+   zippered = ~0U,
+-};
++} __attribute__((deprecated));
+ 
+ ///
+ /// \brief Defines a list of Objective-C constraints.
+--- include/tapi/Version.inc	Mon Dec  7 10:22:48 2020
++++ /dev/null	Thu Jan  1 00:00:00 1970
+@@ -1,4 +0,0 @@
+-#define TAPI_VERSION 11.0.0
+-#define TAPI_VERSION_MAJOR 11U
+-#define TAPI_VERSION_MINOR 0U
+-#define TAPI_VERSION_PATCH 0U
+--- lib/Config/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/Config/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- lib/Config/Version.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Config/Version.cpp	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/APIVerifier/marzipan.conf	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/APIVerifier/marzipan.conf	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/legacy/iPhoneOS13.0.Public.conf	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/legacy/iPhoneOS13.0.Public.conf	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/legacy/iPhoneOS9.0.Internal.conf	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/legacy/iPhoneOS9.0.Internal.conf	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/legacy/MacOS10.12.Public.conf	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/legacy/MacOS10.12.Public.conf	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/EquivalentTypes.conf	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/EquivalentTypes.conf	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/iOS.conf	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/iOS.conf	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/macOS.conf	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/macOS.conf	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/tvOS.conf	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/tvOS.conf	Wed Oct  6 06:39:00 2021
+--- lib/ConfigurationFiles/watchOS.conf	Fri Feb 17 13:58:47 2023
++++ lib/ConfigurationFiles/watchOS.conf	Wed Oct  6 06:39:00 2021
+--- lib/Core/API.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/API.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/APIJSONSerializer.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/APIJSONSerializer.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/APIPrinter.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/APIPrinter.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/APIVisitor.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/APIVisitor.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/Architecture.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Architecture.cpp	Wed Oct  6 06:39:00 2021
+@@ -54,7 +54,6 @@
+   case AK_unknown:
+     return "unknown";
+   }
+-  return "unknown";
+ }
+ 
+ std::pair<uint32_t, uint32_t> getCPUType(Architecture arch) {
+@@ -67,7 +66,6 @@
+   case AK_unknown:
+     return std::make_pair(0, 0);
+   }
+-  return std::make_pair(0, 0);
+ }
+ 
+ Architecture mapToArchitecture(const Triple &target) {
+--- lib/Core/ArchitectureSet.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/ArchitectureSet.cpp	Wed Oct  6 06:39:00 2021
+@@ -60,7 +60,7 @@
+   std::string result;
+   auto size = count();
+   for (auto arch : *this) {
+-    result.append(getArchName(arch).str());
++    result.append(getArchName(arch));
+     size -= 1;
+     if (size)
+       result.append(" ");
+--- lib/Core/AvailabilityInfo.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/AvailabilityInfo.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/Core/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -35,10 +35,7 @@
+   XPI.cpp
+   XPISet.cpp
+   YAMLReaderWriter.cpp
+-  )
+ 
+-if(WIN32 OR CYGWIN)
+-  target_link_libraries(tapiCore PRIVATE
+-    clangBasic
+-    )
+-endif()
++  LINK_LIBS
++  clangBasic
++  )
+--- lib/Core/FakeSymbols.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/FakeSymbols.cpp	Wed Oct  6 06:39:00 2021
+@@ -43,7 +43,7 @@
+ }
+ 
+ Expected<std::unique_ptr<ObjectFile>>
+-ObjectFile::createELFObjectFile(MemoryBufferRef Obj, bool InitContent) {
++ObjectFile::createELFObjectFile(MemoryBufferRef Obj) {
+   llvm_unreachable("not supported");
+ }
+ 
+--- lib/Core/FileListReader.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/FileListReader.cpp	Wed Oct  6 06:39:00 2021
+@@ -92,7 +92,7 @@
+     if (!path)
+       return path.takeError();
+ 
+-    headerList.emplace_back(HeaderInfo{*type, path->str()});
++    headerList.emplace_back(HeaderInfo{*type, *path});
+   }
+ 
+   return Error::success();
+--- lib/Core/FileManager.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/FileManager.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/FileSystem.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/FileSystem.cpp	Wed Oct  6 06:39:00 2021
+@@ -23,101 +23,6 @@
+ 
+ using namespace llvm;
+ 
+-#ifdef __MINGW32__
+-
+-#include <errno.h>
+-#include <stdlib.h>
+-#include <windows.h>
+-
+-char *
+-__realpath( const char *__restrict__ name, char *__restrict__ resolved )
+-{
+-  char *retname = NULL;  /* we will return this, if we fail */
+-  char *p;
+-
+-  /* SUSv3 says we must set `errno = EINVAL', and return NULL,
+-   * if `name' is passed as a NULL pointer.
+-   */
+-
+-  if( name == NULL )
+-    errno = EINVAL;
+-
+-  /* Otherwise, `name' must refer to a readable filesystem object,
+-   * if we are going to resolve its absolute path name.
+-   */
+-
+-//  else if( access( name, 4 ) == 0 )
+-  else if(TRUE)
+-  {
+-    /* If `name' didn't point to an existing entity,
+-     * then we don't get to here; we simply fall past this block,
+-     * returning NULL, with `errno' appropriately set by `access'.
+-     *
+-     * When we _do_ get to here, then we can use `_fullpath' to
+-     * resolve the full path for `name' into `resolved', but first,
+-     * check that we have a suitable buffer, in which to return it.
+-     */
+-
+-    if( (retname = resolved) == NULL )
+-    {
+-      /* Caller didn't give us a buffer, so we'll exercise the
+-       * option granted by SUSv3, and allocate one.
+-       *
+-       * `_fullpath' would do this for us, but it uses `malloc', and
+-       * Microsoft's implementation doesn't set `errno' on failure.
+-       * If we don't do this explicitly ourselves, then we will not
+-       * know if `_fullpath' fails on `malloc' failure, or for some
+-       * other reason, and we want to set `errno = ENOMEM' for the
+-       * `malloc' failure case.
+-       */
+-
+-      retname = (char*)malloc( _MAX_PATH );
+-    }
+-
+-    /* By now, we should have a valid buffer.
+-     * If we don't, then we know that `malloc' failed,
+-     * so we can set `errno = ENOMEM' appropriately.
+-     */
+-
+-    if( retname == NULL )
+-      errno = ENOMEM;
+-
+-    /* Otherwise, when we do have a valid buffer,
+-     * `_fullpath' should only fail if the path name is too long.
+-     */
+-
+-    else if (_fullpath( retname, name, _MAX_PATH ) == NULL )
+-      errno = ENAMETOOLONG;
+-  }
+-
+-  while ((p = strchr (retname, '\\')) != NULL)
+-  {
+-    *p = '/';
+-  }  
+-
+-  /* By the time we get to here,
+-   * `retname' either points to the required resolved path name,
+-   * or it is NULL, with `errno' set appropriately, either of which
+-   * is our required return condition.
+-   */
+-
+-  return retname;
+-}
+-int
+-__readlink (const char *path, char *buf, size_t bufsize)
+-{
+-  struct stat statbuf;
+-
+-  /* In general we should use lstat() here, not stat().  But on platforms
+-     without symbolic links lstat() - if it exists - would be equivalent to
+-     stat(), therefore we can use stat().  This saves us a configure check.  */
+-  if (stat (path, &statbuf) >= 0)
+-    errno = EINVAL;
+-  return -1;
+-}
+-
+-#endif
+-
+ TAPI_NAMESPACE_INTERNAL_BEGIN
+ 
+ std::error_code realpath(SmallVectorImpl<char> &path) {
+@@ -127,15 +32,11 @@
+ 
+   errno = 0;
+   const char *ptr = nullptr;
+-  #ifdef __MINGW32__
+-  if ((ptr = __realpath(path.data(), result.data())) == nullptr)
+-  #else
+   if ((ptr = ::realpath(path.data(), result.data())) == nullptr)
+-  #endif
+     return {errno, std::generic_category()};
+ 
+   assert(ptr == result.data() && "Unexpected pointer");
+-  result.truncate(strlen(result.data()));
++  result.set_size(strlen(result.data()));
+   path.swap(result);
+   return {};
+ }
+@@ -146,14 +47,10 @@
+   auto p = path.toNullTerminatedStringRef(pathStorage);
+   SmallString<PATH_MAX> result;
+   ssize_t len;
+-  #ifdef __MINGW32__
+-  if ((len = __readlink(p.data(), result.data(), PATH_MAX)) == -1)
+-  #else
+   if ((len = ::readlink(p.data(), result.data(), PATH_MAX)) == -1)
+-  #endif
+     return {errno, std::generic_category()};
+ 
+-  result.truncate(len);
++  result.set_size(len);
+   linkPath.swap(result);
+ 
+   return {};
+--- lib/Core/Framework.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Framework.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/HeaderFile.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/HeaderFile.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/InterfaceFile.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/InterfaceFile.cpp	Wed Oct  6 06:39:00 2021
+@@ -152,7 +152,7 @@
+                            Target rhs) { return lhs.first < rhs; });
+ 
+   if ((it != _parentUmbrellas.end()) && !(target < it->first)) {
+-    it->second = umbrella.str();
++    it->second = umbrella;
+     return;
+   }
+ 
+@@ -166,7 +166,7 @@
+                            Target rhs) { return lhs.first < rhs; });
+ 
+   if ((it != _uuids.end()) && !(target < it->first)) {
+-    it->second = uuid.str();
++    it->second = uuid;
+     return;
+   }
+ 
+@@ -189,7 +189,7 @@
+   auto addFramework = [&](std::shared_ptr<InterfaceFile> &&framework) {
+     auto it = lower_bound(
+         _documents, framework->getInstallName(),
+-        [](std::shared_ptr<InterfaceFile> &lhs, const StringRef rhs) {
++        [](std::shared_ptr<InterfaceFile> &lhs, const std::string &rhs) {
+           return lhs->getInstallName() < rhs;
+         });
+ 
+@@ -236,7 +236,6 @@
+     return xpi;
+ 
+   return llvm::None;
+-  //return std::nullopt;
+ }
+ 
+ Expected<std::unique_ptr<InterfaceFile>>
+--- lib/Core/InterfaceFileManager.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/InterfaceFileManager.cpp	Wed Oct  6 06:39:00 2021
+@@ -30,12 +30,12 @@
+ 
+ Expected<InterfaceFile *>
+ InterfaceFileManager::readFile(const std::string &path) {
+-  auto file = _fm.getFile(path);
+-  if (!file)
++  auto *file = _fm.getFile(path);
++  if (file == nullptr)
+     return errorCodeToError(
+         std::make_error_code(std::errc::no_such_file_or_directory));
+ 
+-  llvm::ErrorOr<std::unique_ptr<llvm::MemoryBuffer>> bufferOrErr = _fm.getBufferForFile(path);
++  auto bufferOrErr = _fm.getBufferForFile(file);
+   if (!bufferOrErr)
+     return errorCodeToError(bufferOrErr.getError());
+ 
+@@ -44,7 +44,7 @@
+   if (!interface)
+     return interface.takeError();
+ 
+-  auto it = _libraries.find(interface.get()->getInstallName().str());
++  auto it = _libraries.find(interface.get()->getInstallName());
+   if (it != _libraries.end())
+     return it->second.get();
+ 
+--- lib/Core/MachODylibReader.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/MachODylibReader.cpp	Wed Oct  6 06:39:00 2021
+@@ -127,7 +127,7 @@
+     return results.takeError();
+ 
+   auto file = std::unique_ptr<InterfaceFile>(new InterfaceFile);
+-  file->setPath(memBuffer->getBufferIdentifier().str());
++  file->setPath(memBuffer->getBufferIdentifier());
+   file->setMemoryBuffer(std::move(memBuffer));
+ 
+   for (const auto &result : *results) {
+--- lib/Core/MachOReader.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/MachOReader.cpp	Wed Oct  6 06:39:00 2021
+@@ -160,10 +160,12 @@
+   }
+ 
+   for (auto &section : object->sections()) {
+-    std::string sectionName = section.getName()->str();
++    StringRef sectionName;
++    section.getName(sectionName);
+     if (sectionName != "__objc_imageinfo" && sectionName != "__image_info")
+       continue;
+-    std::string content = section.getContents()->str();
++    StringRef content;
++    section.getContents(content);
+     if ((content.size() >= 8) && (content[0] == 0)) {
+       uint32_t flags;
+       if (object->isLittleEndian()) {
+@@ -208,8 +210,6 @@
+   return error;
+ }
+ 
+-/* unused */
+-/*
+ static ObjCPropertyRecord::AttributeKind getAttributeKind(StringRef attr) {
+   unsigned attrs = ObjCPropertyRecord::NoAttr;
+   SmallVector<StringRef, 4> attributes;
+@@ -223,11 +223,10 @@
+ 
+   return (ObjCPropertyRecord::AttributeKind)attrs;
+ }
+-*/
+ 
+ static Error readUndefinedSymbols(MachOObjectFile *object, API &api) {
+   for (const auto &symbol : object->symbols()) {
+-    uint32_t symbolFlags = cantFail(symbol.getFlags());
++    auto symbolFlags = symbol.getFlags();
+     if ((symbolFlags & BasicSymbolRef::SF_Global) == 0)
+       continue;
+     if ((symbolFlags & BasicSymbolRef::SF_Undefined) == 0)
+--- lib/Core/PackedVersion.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/PackedVersion.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/Path.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Path.cpp	Wed Oct  6 06:39:00 2021
+@@ -54,7 +54,7 @@
+                const std::function<bool(StringRef)> &func) {
+   PathSeq files;
+   std::error_code ec;
+-  llvm::vfs::FileSystem &fs = fm.getVirtualFileSystem();
++  auto &fs = *fm.getVirtualFileSystem();
+   for (llvm::vfs::recursive_directory_iterator i(fs, path, ec), ie; i != ie;
+        i.increment(ec)) {
+     if (ec)
+--- lib/Core/Platform.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Platform.cpp	Wed Oct  6 06:39:00 2021
+@@ -100,10 +100,7 @@
+     return "tvOS Simulator";
+   case Platform::watchOSSimulator:
+     return "watchOS Simulator";
+-  case Platform::bridgeOS:
+-    return "bridgeOS";
+   }
+-  return "unknown";
+ }
+ 
+ std::string getOSAndEnvironmentName(Platform platform, std::string version) {
+@@ -129,7 +126,6 @@
+   case Platform::watchOSSimulator:
+     return "watchos" + version + "-simulator";
+   }
+-  return "darwin";
+ }
+ 
+ raw_ostream &operator<<(raw_ostream &os, Platform platform) {
+@@ -164,7 +160,7 @@
+   for (auto platform : platforms) {
+     if (index > 0)
+       diagString.append(", ");
+-    diagString.append(getPlatformName(platform).str());
++    diagString.append(getPlatformName(platform));
+     ++index;
+   }
+   diagString.append(" ]");
+--- lib/Core/ReexportFileWriter.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/ReexportFileWriter.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/Registry.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Registry.cpp	Wed Oct  6 06:39:00 2021
+@@ -121,7 +121,7 @@
+                           VersionedFileType fileType) const {
+   std::error_code ec;
+   {
+-    raw_fd_ostream os(path, ec, sys::fs::OF_Text);
++    raw_fd_ostream os(path, ec, sys::fs::F_Text);
+     if (ec)
+       return errorCodeToError(ec);
+     auto error = writeFile(os, file, fileType);
+@@ -150,7 +150,7 @@
+ }
+ 
+ void Registry::addYAMLReaders() {
+-  auto reader = std::make_unique<YAMLReader>();
++  auto reader = make_unique<YAMLReader>();
+   reader->add(
+       std::unique_ptr<DocumentHandler>(new stub::v1::YAMLDocumentHandler));
+   reader->add(
+@@ -163,7 +163,7 @@
+ }
+ 
+ void Registry::addYAMLWriters() {
+-  auto writer = std::make_unique<YAMLWriter>();
++  auto writer = make_unique<YAMLWriter>();
+   writer->add(
+       std::unique_ptr<DocumentHandler>(new stub::v1::YAMLDocumentHandler));
+   writer->add(
+@@ -176,7 +176,7 @@
+ }
+ 
+ void Registry::addDiagnosticReader() {
+-  add(std::make_unique<DiagnosticReader>());
++  add(make_unique<DiagnosticReader>());
+ }
+ 
+ TAPI_NAMESPACE_INTERNAL_END
+--- lib/Core/TapiError.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/TapiError.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/Target.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Target.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/TextStub.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/TextStub.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/TextStubCommon.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/TextStubCommon.cpp	Wed Oct  6 06:39:00 2021
+@@ -18,6 +18,17 @@
+ namespace yaml {
+ 
+ using Impl = ScalarTraits<StringRef>;
++void ScalarTraits<FlowStringRef>::output(const FlowStringRef &value, void *ctx,
++                                         raw_ostream &os) {
++  Impl::output(value, ctx, os);
++}
++StringRef ScalarTraits<FlowStringRef>::input(StringRef value, void *ctx,
++                                             FlowStringRef &out) {
++  return Impl::input(value, ctx, out.value);
++}
++QuotingType ScalarTraits<FlowStringRef>::mustQuote(StringRef name) {
++  return Impl::mustQuote(name);
++}
+ 
+ using tapi::ObjCConstraint;
+ void ScalarEnumerationTraits<ObjCConstraint>::enumeration(
+@@ -84,6 +95,46 @@
+   return QuotingType::None;
+ }
+ 
++void ScalarTraits<SwiftVersion>::output(const SwiftVersion &value, void *,
++                                        raw_ostream &os) {
++  switch (value) {
++  case 1:
++    os << "1.0";
++    break;
++  case 2:
++    os << "1.1";
++    break;
++  case 3:
++    os << "2.0";
++    break;
++  case 4:
++    os << "3.0";
++    break;
++  default:
++    os << (unsigned)value;
++    break;
++  }
++}
++StringRef ScalarTraits<SwiftVersion>::input(StringRef scalar, void *,
++                                            SwiftVersion &value) {
++  value = StringSwitch<SwiftVersion>(scalar)
++              .Case("1.0", 1)
++              .Case("1.1", 2)
++              .Case("2.0", 3)
++              .Case("3.0", 4)
++              .Default(0);
++  if (value != SwiftVersion(0))
++    return {};
++
++  if (scalar.getAsInteger(10, value))
++    return "invalid Swift ABI version.";
++
++  return StringRef();
++}
++QuotingType ScalarTraits<SwiftVersion>::mustQuote(StringRef) {
++  return QuotingType::None;
++}
++
+ using TAPI_INTERNAL::AvailabilityInfo;
+ void ScalarTraits<AvailabilityInfo>::output(const AvailabilityInfo &value,
+                                             void *, raw_ostream &os) {
+@@ -139,24 +190,24 @@
+     return "invalid uuid string pair";
+ 
+   value.first = Target{getArchType(arch), Platform::unknown};
+-  value.second = uuid.str();
++  value.second = uuid;
+   return {};
+ }
+ QuotingType ScalarTraits<UUID>::mustQuote(StringRef) {
+   return QuotingType::Single;
+ }
+ 
+-using clang::Language;
+-void ScalarEnumerationTraits<clang::Language>::enumeration(
+-    IO &io, clang::Language &kind) {
+-  io.enumCase(kind, "c", clang::Language::C);
+-  io.enumCase(kind, "cxx", clang::Language::CXX);
+-  io.enumCase(kind, "objective-c", clang::Language::ObjC);
+-  io.enumCase(kind, "objc", clang::Language::ObjC); // to keep old snapshots working.
+-  io.enumCase(kind, "objective-cxx", clang::Language::ObjCXX);
++using clang::InputKind;
++void ScalarEnumerationTraits<InputKind::Language>::enumeration(
++    IO &io, InputKind::Language &kind) {
++  io.enumCase(kind, "c", InputKind::C);
++  io.enumCase(kind, "cxx", InputKind::CXX);
++  io.enumCase(kind, "objective-c", InputKind::ObjC);
++  io.enumCase(kind, "objc", InputKind::ObjC); // to keep old snapshots working.
++  io.enumCase(kind, "objective-cxx", InputKind::ObjCXX);
+   io.enumCase(kind, "objcxx",
+-              clang::Language::ObjCXX); // to keep old snapshots working.
+-  io.enumCase(kind, "unknown", clang::Language::Unknown);
++              InputKind::ObjCXX); // to keep old snapshots working.
++  io.enumCase(kind, "unknown", InputKind::Unknown);
+ }
+ 
+ } // end namespace yaml.
+--- lib/Core/TextStubv4.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/TextStubv4.cpp	Wed Oct  6 06:39:00 2021
+@@ -122,10 +122,8 @@
+   static StringRef input(StringRef scalar, void *, Target &value) {
+     auto result = Target::create(scalar);
+     if (!result)
+-    {
+-      static std::string nonstackresult = toString(result.takeError());
+-      return (StringRef(nonstackresult));
+-    }
++      return toString(result.takeError());
++
+     value = *result;
+     return {};
+   }
+--- lib/Core/Utils.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Utils.cpp	Wed Oct  6 06:39:00 2021
+@@ -88,10 +88,10 @@
+       SmallString<PATH_MAX> tbdPath = fullPath;
+       TAPI_INTERNAL::replace_extension(tbdPath, ".tbd");
+       if (fm.exists(tbdPath))
+-        return StringRef(tbdPath).str();
++        return tbdPath.str();
+ 
+       if (fm.exists(fullPath))
+-        return StringRef(fullPath).str();
++        return fullPath.str();
+     }
+   } else {
+     // Copy ld64's behavior: If this is a .dylib inside a framework, do not
+@@ -107,10 +107,10 @@
+         TAPI_INTERNAL::replace_extension(tbdPath, ".tbd");
+ 
+         if (fm.exists(tbdPath))
+-          return StringRef(tbdPath).str();
++          return tbdPath.str();
+ 
+         if (fm.exists(fullPath))
+-          return StringRef(fullPath).str();
++          return fullPath.str();
+       }
+     }
+   }
+@@ -123,10 +123,10 @@
+     TAPI_INTERNAL::replace_extension(tbdPath, ".tbd");
+ 
+     if (fm.exists(tbdPath))
+-      return StringRef(tbdPath).str();
++      return tbdPath.str();
+ 
+     if (fm.exists(fullPath))
+-      return StringRef(fullPath).str();
++      return fullPath.str();
+   }
+ 
+   return std::string();
+--- lib/Core/XPI.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/XPI.cpp	Wed Oct  6 06:39:00 2021
+@@ -40,7 +40,7 @@
+ 
+ std::string XPI::getPrettyName(bool demangle) const {
+   if (!demangle)
+-    return _name.str();
++    return _name;
+ 
+   if (demangle && _name.startswith("__Z")) {
+     int status = 0;
+@@ -54,9 +54,9 @@
+   }
+ 
+   if (_name[0] == '_')
+-    return _name.substr(1).str();
++    return _name.substr(1);
+ 
+-  return _name.str();
++  return _name;
+ }
+ 
+ std::string XPI::getAnnotatedName(bool demangle) const {
+@@ -77,7 +77,6 @@
+   case XPIKind::ObjectiveCInstanceVariable:
+     return name + "(ObjC IVar) " + _name.str();
+   }
+-  return "unknown";
+ }
+ 
+ void XPI::print(raw_ostream &os) const {
+--- lib/Core/XPISet.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/XPISet.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Core/YAMLReaderWriter.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/YAMLReaderWriter.cpp	Wed Oct  6 06:39:00 2021
+@@ -61,7 +61,7 @@
+                        diag.getRanges(), diag.getFixIts());
+ 
+   newdiag.print(nullptr, s);
+-  file->errorMessage = StringRef(message).str();
++  file->errorMessage = message.str();
+ }
+ 
+ bool YAMLBase::canRead(MemoryBufferRef memBufferRef, FileType types) const {
+@@ -113,7 +113,7 @@
+                      ReadFlags readFlags, ArchitectureSet arches) const {
+   // Create YAML Input Reader.
+   YAMLContext ctx(*this);
+-  ctx.path = memBuffer->getBufferIdentifier().str();
++  ctx.path = memBuffer->getBufferIdentifier();
+   ctx.readFlags = readFlags;
+   llvm::yaml::Input yin(memBuffer->getBuffer(), &ctx, DiagHandler, &ctx);
+ 
+--- lib/Diagnostics/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/Diagnostics/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- lib/Diagnostics/Diagnostics.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Diagnostics/Diagnostics.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/API2XPIConverter.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/API2XPIConverter.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/API2XPIConverter.h	Fri Feb 17 13:58:47 2023
++++ lib/Driver/API2XPIConverter.h	Wed Oct  6 06:39:00 2021
+--- lib/Driver/ArchiveDriver.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/ArchiveDriver.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/Driver/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -21,14 +21,9 @@
+   TapiDriverOptions
+ 
+   LINK_LIBS
++  clangBasic
+   tapiConfig
+   tapiCore
+   tapiDiagnostics
+   tapiFrontend
+   )
+-
+-if(WIN32 OR CYGWIN)
+-  target_link_libraries(tapiDriver PRIVATE
+-    clangBasic
+-    )
+-endif()
+--- lib/Driver/Configuration.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/Configuration.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/ConfigurationFileReader.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/ConfigurationFileReader.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/ConfigurationFileReader.h	Fri Feb 17 13:58:47 2023
++++ lib/Driver/ConfigurationFileReader.h	Wed Oct  6 06:39:00 2021
+--- lib/Driver/DirectoryScanner.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/DirectoryScanner.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/Driver.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/Driver.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/DriverOptions.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/DriverOptions.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/DriverUtils.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/DriverUtils.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/GenerateAPITestsDriver.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/GenerateAPITestsDriver.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/Glob.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/Glob.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/HeaderGlob.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/HeaderGlob.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/InstallAPIDriver.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/InstallAPIDriver.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/Options.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/Options.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/ReexportDriver.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/ReexportDriver.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/Snapshot.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/Snapshot.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/SnapshotFileSystem.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/SnapshotFileSystem.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Driver/StubDriver.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Driver/StubDriver.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Frontend/APIVisitor.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Frontend/APIVisitor.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Frontend/APIVisitor.h	Fri Feb 17 13:58:47 2023
++++ lib/Frontend/APIVisitor.h	Wed Oct  6 06:39:00 2021
+--- lib/Frontend/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/Frontend/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- lib/Frontend/Frontend.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Frontend/Frontend.cpp	Wed Oct  6 06:39:00 2021
+--- lib/Frontend/FrontendContext.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Frontend/FrontendContext.cpp	Wed Oct  6 06:39:00 2021
+--- lib/NoInits/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/NoInits/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- lib/NoInits/CrashRecoveryContext.cpp	Fri Feb 17 13:58:47 2023
++++ lib/NoInits/CrashRecoveryContext.cpp	Wed Oct  6 06:39:00 2021
+--- lib/NoInits/Debug.cpp	Fri Feb 17 13:58:47 2023
++++ lib/NoInits/Debug.cpp	Wed Oct  6 06:39:00 2021
+--- lib/NoInits/ErrorHandling.cpp	Fri Feb 17 13:58:47 2023
++++ lib/NoInits/ErrorHandling.cpp	Wed Oct  6 06:39:00 2021
+--- lib/NoInits/Signals.cpp	Fri Feb 17 13:58:47 2023
++++ lib/NoInits/Signals.cpp	Wed Oct  6 06:39:00 2021
+--- lib/NoInits/WithColor.cpp	Fri Feb 17 13:58:47 2023
++++ lib/NoInits/WithColor.cpp	Wed Oct  6 06:39:00 2021
+--- lib/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -1,7 +1,7 @@
+-#add_subdirectory(Config)
+-#add_subdirectory(ConfigurationFiles)
++add_subdirectory(Config)
++add_subdirectory(ConfigurationFiles)
+ add_subdirectory(Core)
+-#add_subdirectory(Diagnostics)
+-#add_subdirectory(Driver)
+-#add_subdirectory(Frontend)
+-#add_subdirectory(NoInits)
++add_subdirectory(Diagnostics)
++add_subdirectory(Driver)
++add_subdirectory(Frontend)
++add_subdirectory(NoInits)
+--- lib/Core/Architecture.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Architecture.cpp	Wed Oct  6 06:39:00 2021
+@@ -54,7 +54,6 @@
+   case AK_unknown:
+     return "unknown";
+   }
+-  return "unknown";
+ }
+ 
+ std::pair<uint32_t, uint32_t> getCPUType(Architecture arch) {
+@@ -67,7 +66,6 @@
+   case AK_unknown:
+     return std::make_pair(0, 0);
+   }
+-  return std::make_pair(0, 0);
+ }
+ 
+ Architecture mapToArchitecture(const Triple &target) {
+--- lib/Core/ArchitectureSet.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/ArchitectureSet.cpp	Wed Oct  6 06:39:00 2021
+@@ -60,7 +60,7 @@
+   std::string result;
+   auto size = count();
+   for (auto arch : *this) {
+-    result.append(getArchName(arch).str());
++    result.append(getArchName(arch));
+     size -= 1;
+     if (size)
+       result.append(" ");
+--- lib/Core/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/Core/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -35,10 +35,7 @@
+   XPI.cpp
+   XPISet.cpp
+   YAMLReaderWriter.cpp
+-  )
+ 
+-if(WIN32 OR CYGWIN)
+-  target_link_libraries(tapiCore PRIVATE
+-    clangBasic
+-    )
+-endif()
++  LINK_LIBS
++  clangBasic
++  )
+--- lib/Core/FakeSymbols.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/FakeSymbols.cpp	Wed Oct  6 06:39:00 2021
+@@ -43,7 +43,7 @@
+ }
+ 
+ Expected<std::unique_ptr<ObjectFile>>
+-ObjectFile::createELFObjectFile(MemoryBufferRef Obj, bool InitContent) {
++ObjectFile::createELFObjectFile(MemoryBufferRef Obj) {
+   llvm_unreachable("not supported");
+ }
+ 
+--- lib/Core/FileListReader.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/FileListReader.cpp	Wed Oct  6 06:39:00 2021
+@@ -92,7 +92,7 @@
+     if (!path)
+       return path.takeError();
+ 
+-    headerList.emplace_back(HeaderInfo{*type, path->str()});
++    headerList.emplace_back(HeaderInfo{*type, *path});
+   }
+ 
+   return Error::success();
+--- lib/Core/FileSystem.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/FileSystem.cpp	Wed Oct  6 06:39:00 2021
+@@ -23,101 +23,6 @@
+ 
+ using namespace llvm;
+ 
+-#ifdef __MINGW32__
+-
+-#include <errno.h>
+-#include <stdlib.h>
+-#include <windows.h>
+-
+-char *
+-__realpath( const char *__restrict__ name, char *__restrict__ resolved )
+-{
+-  char *retname = NULL;  /* we will return this, if we fail */
+-  char *p;
+-
+-  /* SUSv3 says we must set `errno = EINVAL', and return NULL,
+-   * if `name' is passed as a NULL pointer.
+-   */
+-
+-  if( name == NULL )
+-    errno = EINVAL;
+-
+-  /* Otherwise, `name' must refer to a readable filesystem object,
+-   * if we are going to resolve its absolute path name.
+-   */
+-
+-//  else if( access( name, 4 ) == 0 )
+-  else if(TRUE)
+-  {
+-    /* If `name' didn't point to an existing entity,
+-     * then we don't get to here; we simply fall past this block,
+-     * returning NULL, with `errno' appropriately set by `access'.
+-     *
+-     * When we _do_ get to here, then we can use `_fullpath' to
+-     * resolve the full path for `name' into `resolved', but first,
+-     * check that we have a suitable buffer, in which to return it.
+-     */
+-
+-    if( (retname = resolved) == NULL )
+-    {
+-      /* Caller didn't give us a buffer, so we'll exercise the
+-       * option granted by SUSv3, and allocate one.
+-       *
+-       * `_fullpath' would do this for us, but it uses `malloc', and
+-       * Microsoft's implementation doesn't set `errno' on failure.
+-       * If we don't do this explicitly ourselves, then we will not
+-       * know if `_fullpath' fails on `malloc' failure, or for some
+-       * other reason, and we want to set `errno = ENOMEM' for the
+-       * `malloc' failure case.
+-       */
+-
+-      retname = (char*)malloc( _MAX_PATH );
+-    }
+-
+-    /* By now, we should have a valid buffer.
+-     * If we don't, then we know that `malloc' failed,
+-     * so we can set `errno = ENOMEM' appropriately.
+-     */
+-
+-    if( retname == NULL )
+-      errno = ENOMEM;
+-
+-    /* Otherwise, when we do have a valid buffer,
+-     * `_fullpath' should only fail if the path name is too long.
+-     */
+-
+-    else if (_fullpath( retname, name, _MAX_PATH ) == NULL )
+-      errno = ENAMETOOLONG;
+-  }
+-
+-  while ((p = strchr (retname, '\\')) != NULL)
+-  {
+-    *p = '/';
+-  }  
+-
+-  /* By the time we get to here,
+-   * `retname' either points to the required resolved path name,
+-   * or it is NULL, with `errno' set appropriately, either of which
+-   * is our required return condition.
+-   */
+-
+-  return retname;
+-}
+-int
+-__readlink (const char *path, char *buf, size_t bufsize)
+-{
+-  struct stat statbuf;
+-
+-  /* In general we should use lstat() here, not stat().  But on platforms
+-     without symbolic links lstat() - if it exists - would be equivalent to
+-     stat(), therefore we can use stat().  This saves us a configure check.  */
+-  if (stat (path, &statbuf) >= 0)
+-    errno = EINVAL;
+-  return -1;
+-}
+-
+-#endif
+-
+ TAPI_NAMESPACE_INTERNAL_BEGIN
+ 
+ std::error_code realpath(SmallVectorImpl<char> &path) {
+@@ -127,15 +32,11 @@
+ 
+   errno = 0;
+   const char *ptr = nullptr;
+-  #ifdef __MINGW32__
+-  if ((ptr = __realpath(path.data(), result.data())) == nullptr)
+-  #else
+   if ((ptr = ::realpath(path.data(), result.data())) == nullptr)
+-  #endif
+     return {errno, std::generic_category()};
+ 
+   assert(ptr == result.data() && "Unexpected pointer");
+-  result.truncate(strlen(result.data()));
++  result.set_size(strlen(result.data()));
+   path.swap(result);
+   return {};
+ }
+@@ -146,14 +47,10 @@
+   auto p = path.toNullTerminatedStringRef(pathStorage);
+   SmallString<PATH_MAX> result;
+   ssize_t len;
+-  #ifdef __MINGW32__
+-  if ((len = __readlink(p.data(), result.data(), PATH_MAX)) == -1)
+-  #else
+   if ((len = ::readlink(p.data(), result.data(), PATH_MAX)) == -1)
+-  #endif
+     return {errno, std::generic_category()};
+ 
+-  result.truncate(len);
++  result.set_size(len);
+   linkPath.swap(result);
+ 
+   return {};
+--- lib/Core/InterfaceFile.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/InterfaceFile.cpp	Wed Oct  6 06:39:00 2021
+@@ -152,7 +152,7 @@
+                            Target rhs) { return lhs.first < rhs; });
+ 
+   if ((it != _parentUmbrellas.end()) && !(target < it->first)) {
+-    it->second = umbrella.str();
++    it->second = umbrella;
+     return;
+   }
+ 
+@@ -166,7 +166,7 @@
+                            Target rhs) { return lhs.first < rhs; });
+ 
+   if ((it != _uuids.end()) && !(target < it->first)) {
+-    it->second = uuid.str();
++    it->second = uuid;
+     return;
+   }
+ 
+@@ -189,7 +189,7 @@
+   auto addFramework = [&](std::shared_ptr<InterfaceFile> &&framework) {
+     auto it = lower_bound(
+         _documents, framework->getInstallName(),
+-        [](std::shared_ptr<InterfaceFile> &lhs, const StringRef rhs) {
++        [](std::shared_ptr<InterfaceFile> &lhs, const std::string &rhs) {
+           return lhs->getInstallName() < rhs;
+         });
+ 
+@@ -236,7 +236,6 @@
+     return xpi;
+ 
+   return llvm::None;
+-  //return std::nullopt;
+ }
+ 
+ Expected<std::unique_ptr<InterfaceFile>>
+--- lib/Core/InterfaceFileManager.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/InterfaceFileManager.cpp	Wed Oct  6 06:39:00 2021
+@@ -30,12 +30,12 @@
+ 
+ Expected<InterfaceFile *>
+ InterfaceFileManager::readFile(const std::string &path) {
+-  auto file = _fm.getFile(path);
+-  if (!file)
++  auto *file = _fm.getFile(path);
++  if (file == nullptr)
+     return errorCodeToError(
+         std::make_error_code(std::errc::no_such_file_or_directory));
+ 
+-  llvm::ErrorOr<std::unique_ptr<llvm::MemoryBuffer>> bufferOrErr = _fm.getBufferForFile(path);
++  auto bufferOrErr = _fm.getBufferForFile(file);
+   if (!bufferOrErr)
+     return errorCodeToError(bufferOrErr.getError());
+ 
+@@ -44,7 +44,7 @@
+   if (!interface)
+     return interface.takeError();
+ 
+-  auto it = _libraries.find(interface.get()->getInstallName().str());
++  auto it = _libraries.find(interface.get()->getInstallName());
+   if (it != _libraries.end())
+     return it->second.get();
+ 
+--- lib/Core/MachODylibReader.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/MachODylibReader.cpp	Wed Oct  6 06:39:00 2021
+@@ -127,7 +127,7 @@
+     return results.takeError();
+ 
+   auto file = std::unique_ptr<InterfaceFile>(new InterfaceFile);
+-  file->setPath(memBuffer->getBufferIdentifier().str());
++  file->setPath(memBuffer->getBufferIdentifier());
+   file->setMemoryBuffer(std::move(memBuffer));
+ 
+   for (const auto &result : *results) {
+--- lib/Core/MachOReader.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/MachOReader.cpp	Wed Oct  6 06:39:00 2021
+@@ -160,10 +160,12 @@
+   }
+ 
+   for (auto &section : object->sections()) {
+-    std::string sectionName = section.getName()->str();
++    StringRef sectionName;
++    section.getName(sectionName);
+     if (sectionName != "__objc_imageinfo" && sectionName != "__image_info")
+       continue;
+-    std::string content = section.getContents()->str();
++    StringRef content;
++    section.getContents(content);
+     if ((content.size() >= 8) && (content[0] == 0)) {
+       uint32_t flags;
+       if (object->isLittleEndian()) {
+@@ -208,8 +210,6 @@
+   return error;
+ }
+ 
+-/* unused */
+-/*
+ static ObjCPropertyRecord::AttributeKind getAttributeKind(StringRef attr) {
+   unsigned attrs = ObjCPropertyRecord::NoAttr;
+   SmallVector<StringRef, 4> attributes;
+@@ -223,11 +223,10 @@
+ 
+   return (ObjCPropertyRecord::AttributeKind)attrs;
+ }
+-*/
+ 
+ static Error readUndefinedSymbols(MachOObjectFile *object, API &api) {
+   for (const auto &symbol : object->symbols()) {
+-    uint32_t symbolFlags = cantFail(symbol.getFlags());
++    auto symbolFlags = symbol.getFlags();
+     if ((symbolFlags & BasicSymbolRef::SF_Global) == 0)
+       continue;
+     if ((symbolFlags & BasicSymbolRef::SF_Undefined) == 0)
+--- lib/Core/Path.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Path.cpp	Wed Oct  6 06:39:00 2021
+@@ -54,7 +54,7 @@
+                const std::function<bool(StringRef)> &func) {
+   PathSeq files;
+   std::error_code ec;
+-  llvm::vfs::FileSystem &fs = fm.getVirtualFileSystem();
++  auto &fs = *fm.getVirtualFileSystem();
+   for (llvm::vfs::recursive_directory_iterator i(fs, path, ec), ie; i != ie;
+        i.increment(ec)) {
+     if (ec)
+--- lib/Core/Platform.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Platform.cpp	Wed Oct  6 06:39:00 2021
+@@ -100,10 +100,7 @@
+     return "tvOS Simulator";
+   case Platform::watchOSSimulator:
+     return "watchOS Simulator";
+-  case Platform::bridgeOS:
+-    return "bridgeOS";
+   }
+-  return "unknown";
+ }
+ 
+ std::string getOSAndEnvironmentName(Platform platform, std::string version) {
+@@ -129,7 +126,6 @@
+   case Platform::watchOSSimulator:
+     return "watchos" + version + "-simulator";
+   }
+-  return "darwin";
+ }
+ 
+ raw_ostream &operator<<(raw_ostream &os, Platform platform) {
+@@ -164,7 +160,7 @@
+   for (auto platform : platforms) {
+     if (index > 0)
+       diagString.append(", ");
+-    diagString.append(getPlatformName(platform).str());
++    diagString.append(getPlatformName(platform));
+     ++index;
+   }
+   diagString.append(" ]");
+--- lib/Core/Registry.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Registry.cpp	Wed Oct  6 06:39:00 2021
+@@ -121,7 +121,7 @@
+                           VersionedFileType fileType) const {
+   std::error_code ec;
+   {
+-    raw_fd_ostream os(path, ec, sys::fs::OF_Text);
++    raw_fd_ostream os(path, ec, sys::fs::F_Text);
+     if (ec)
+       return errorCodeToError(ec);
+     auto error = writeFile(os, file, fileType);
+@@ -150,7 +150,7 @@
+ }
+ 
+ void Registry::addYAMLReaders() {
+-  auto reader = std::make_unique<YAMLReader>();
++  auto reader = make_unique<YAMLReader>();
+   reader->add(
+       std::unique_ptr<DocumentHandler>(new stub::v1::YAMLDocumentHandler));
+   reader->add(
+@@ -163,7 +163,7 @@
+ }
+ 
+ void Registry::addYAMLWriters() {
+-  auto writer = std::make_unique<YAMLWriter>();
++  auto writer = make_unique<YAMLWriter>();
+   writer->add(
+       std::unique_ptr<DocumentHandler>(new stub::v1::YAMLDocumentHandler));
+   writer->add(
+@@ -176,7 +176,7 @@
+ }
+ 
+ void Registry::addDiagnosticReader() {
+-  add(std::make_unique<DiagnosticReader>());
++  add(make_unique<DiagnosticReader>());
+ }
+ 
+ TAPI_NAMESPACE_INTERNAL_END
+--- lib/Core/TextStubCommon.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/TextStubCommon.cpp	Wed Oct  6 06:39:00 2021
+@@ -18,6 +18,17 @@
+ namespace yaml {
+ 
+ using Impl = ScalarTraits<StringRef>;
++void ScalarTraits<FlowStringRef>::output(const FlowStringRef &value, void *ctx,
++                                         raw_ostream &os) {
++  Impl::output(value, ctx, os);
++}
++StringRef ScalarTraits<FlowStringRef>::input(StringRef value, void *ctx,
++                                             FlowStringRef &out) {
++  return Impl::input(value, ctx, out.value);
++}
++QuotingType ScalarTraits<FlowStringRef>::mustQuote(StringRef name) {
++  return Impl::mustQuote(name);
++}
+ 
+ using tapi::ObjCConstraint;
+ void ScalarEnumerationTraits<ObjCConstraint>::enumeration(
+@@ -84,6 +95,46 @@
+   return QuotingType::None;
+ }
+ 
++void ScalarTraits<SwiftVersion>::output(const SwiftVersion &value, void *,
++                                        raw_ostream &os) {
++  switch (value) {
++  case 1:
++    os << "1.0";
++    break;
++  case 2:
++    os << "1.1";
++    break;
++  case 3:
++    os << "2.0";
++    break;
++  case 4:
++    os << "3.0";
++    break;
++  default:
++    os << (unsigned)value;
++    break;
++  }
++}
++StringRef ScalarTraits<SwiftVersion>::input(StringRef scalar, void *,
++                                            SwiftVersion &value) {
++  value = StringSwitch<SwiftVersion>(scalar)
++              .Case("1.0", 1)
++              .Case("1.1", 2)
++              .Case("2.0", 3)
++              .Case("3.0", 4)
++              .Default(0);
++  if (value != SwiftVersion(0))
++    return {};
++
++  if (scalar.getAsInteger(10, value))
++    return "invalid Swift ABI version.";
++
++  return StringRef();
++}
++QuotingType ScalarTraits<SwiftVersion>::mustQuote(StringRef) {
++  return QuotingType::None;
++}
++
+ using TAPI_INTERNAL::AvailabilityInfo;
+ void ScalarTraits<AvailabilityInfo>::output(const AvailabilityInfo &value,
+                                             void *, raw_ostream &os) {
+@@ -139,24 +190,24 @@
+     return "invalid uuid string pair";
+ 
+   value.first = Target{getArchType(arch), Platform::unknown};
+-  value.second = uuid.str();
++  value.second = uuid;
+   return {};
+ }
+ QuotingType ScalarTraits<UUID>::mustQuote(StringRef) {
+   return QuotingType::Single;
+ }
+ 
+-using clang::Language;
+-void ScalarEnumerationTraits<clang::Language>::enumeration(
+-    IO &io, clang::Language &kind) {
+-  io.enumCase(kind, "c", clang::Language::C);
+-  io.enumCase(kind, "cxx", clang::Language::CXX);
+-  io.enumCase(kind, "objective-c", clang::Language::ObjC);
+-  io.enumCase(kind, "objc", clang::Language::ObjC); // to keep old snapshots working.
+-  io.enumCase(kind, "objective-cxx", clang::Language::ObjCXX);
++using clang::InputKind;
++void ScalarEnumerationTraits<InputKind::Language>::enumeration(
++    IO &io, InputKind::Language &kind) {
++  io.enumCase(kind, "c", InputKind::C);
++  io.enumCase(kind, "cxx", InputKind::CXX);
++  io.enumCase(kind, "objective-c", InputKind::ObjC);
++  io.enumCase(kind, "objc", InputKind::ObjC); // to keep old snapshots working.
++  io.enumCase(kind, "objective-cxx", InputKind::ObjCXX);
+   io.enumCase(kind, "objcxx",
+-              clang::Language::ObjCXX); // to keep old snapshots working.
+-  io.enumCase(kind, "unknown", clang::Language::Unknown);
++              InputKind::ObjCXX); // to keep old snapshots working.
++  io.enumCase(kind, "unknown", InputKind::Unknown);
+ }
+ 
+ } // end namespace yaml.
+--- lib/Core/TextStubv4.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/TextStubv4.cpp	Wed Oct  6 06:39:00 2021
+@@ -122,10 +122,8 @@
+   static StringRef input(StringRef scalar, void *, Target &value) {
+     auto result = Target::create(scalar);
+     if (!result)
+-    {
+-      static std::string nonstackresult = toString(result.takeError());
+-      return (StringRef(nonstackresult));
+-    }
++      return toString(result.takeError());
++
+     value = *result;
+     return {};
+   }
+--- lib/Core/Utils.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/Utils.cpp	Wed Oct  6 06:39:00 2021
+@@ -88,10 +88,10 @@
+       SmallString<PATH_MAX> tbdPath = fullPath;
+       TAPI_INTERNAL::replace_extension(tbdPath, ".tbd");
+       if (fm.exists(tbdPath))
+-        return StringRef(tbdPath).str();
++        return tbdPath.str();
+ 
+       if (fm.exists(fullPath))
+-        return StringRef(fullPath).str();
++        return fullPath.str();
+     }
+   } else {
+     // Copy ld64's behavior: If this is a .dylib inside a framework, do not
+@@ -107,10 +107,10 @@
+         TAPI_INTERNAL::replace_extension(tbdPath, ".tbd");
+ 
+         if (fm.exists(tbdPath))
+-          return StringRef(tbdPath).str();
++          return tbdPath.str();
+ 
+         if (fm.exists(fullPath))
+-          return StringRef(fullPath).str();
++          return fullPath.str();
+       }
+     }
+   }
+@@ -123,10 +123,10 @@
+     TAPI_INTERNAL::replace_extension(tbdPath, ".tbd");
+ 
+     if (fm.exists(tbdPath))
+-      return StringRef(tbdPath).str();
++      return tbdPath.str();
+ 
+     if (fm.exists(fullPath))
+-      return StringRef(fullPath).str();
++      return fullPath.str();
+   }
+ 
+   return std::string();
+--- lib/Core/XPI.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/XPI.cpp	Wed Oct  6 06:39:00 2021
+@@ -40,7 +40,7 @@
+ 
+ std::string XPI::getPrettyName(bool demangle) const {
+   if (!demangle)
+-    return _name.str();
++    return _name;
+ 
+   if (demangle && _name.startswith("__Z")) {
+     int status = 0;
+@@ -54,9 +54,9 @@
+   }
+ 
+   if (_name[0] == '_')
+-    return _name.substr(1).str();
++    return _name.substr(1);
+ 
+-  return _name.str();
++  return _name;
+ }
+ 
+ std::string XPI::getAnnotatedName(bool demangle) const {
+@@ -77,7 +77,6 @@
+   case XPIKind::ObjectiveCInstanceVariable:
+     return name + "(ObjC IVar) " + _name.str();
+   }
+-  return "unknown";
+ }
+ 
+ void XPI::print(raw_ostream &os) const {
+--- lib/Core/YAMLReaderWriter.cpp	Fri Feb 17 13:58:47 2023
++++ lib/Core/YAMLReaderWriter.cpp	Wed Oct  6 06:39:00 2021
+@@ -61,7 +61,7 @@
+                        diag.getRanges(), diag.getFixIts());
+ 
+   newdiag.print(nullptr, s);
+-  file->errorMessage = StringRef(message).str();
++  file->errorMessage = message.str();
+ }
+ 
+ bool YAMLBase::canRead(MemoryBufferRef memBufferRef, FileType types) const {
+@@ -113,7 +113,7 @@
+                      ReadFlags readFlags, ArchitectureSet arches) const {
+   // Create YAML Input Reader.
+   YAMLContext ctx(*this);
+-  ctx.path = memBuffer->getBufferIdentifier().str();
++  ctx.path = memBuffer->getBufferIdentifier();
+   ctx.readFlags = readFlags;
+   llvm::yaml::Input yin(memBuffer->getBuffer(), &ctx, DiagHandler, &ctx);
+ 
+--- lib/Driver/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/Driver/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -21,14 +21,9 @@
+   TapiDriverOptions
+ 
+   LINK_LIBS
++  clangBasic
+   tapiConfig
+   tapiCore
+   tapiDiagnostics
+   tapiFrontend
+   )
+-
+-if(WIN32 OR CYGWIN)
+-  target_link_libraries(tapiDriver PRIVATE
+-    clangBasic
+-    )
+-endif()
+--- lib/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ lib/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -1,7 +1,7 @@
+-#add_subdirectory(Config)
+-#add_subdirectory(ConfigurationFiles)
++add_subdirectory(Config)
++add_subdirectory(ConfigurationFiles)
+ add_subdirectory(Core)
+-#add_subdirectory(Diagnostics)
+-#add_subdirectory(Driver)
+-#add_subdirectory(Frontend)
+-#add_subdirectory(NoInits)
++add_subdirectory(Diagnostics)
++add_subdirectory(Driver)
++add_subdirectory(Frontend)
++add_subdirectory(NoInits)
+--- tools/libtapi/APIVersion.cpp	Fri Feb 17 13:58:47 2023
++++ tools/libtapi/APIVersion.cpp	Wed Oct  6 06:39:00 2021
+--- tools/libtapi/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/libtapi/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -1,3 +1,4 @@
++set(LLVM_EXPORTED_SYMBOL_FILE ${CMAKE_CURRENT_SOURCE_DIR}/libtapi.exports)
+ set(LLVM_LINK_COMPONENTS
+   Support
+   )
+@@ -11,6 +12,7 @@
+ 
+   LINK_LIBS
+   tapiCore
++  tapiNoInits
+ 
+   NO_INSTALL_RPATH
+   )
+@@ -20,12 +22,10 @@
+   OUTPUT_NAME "tapi"
+   )
+ 
+-if(APPLE)
+-
+ set(DYLIB_VERSION "${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}")
+ set_property(TARGET libtapi APPEND_STRING
+   PROPERTY
+-  LINK_FLAGS " -current_version ${DYLIB_VERSION} -compatibility_version 1 " #-allowable_client ld"
++  LINK_FLAGS " -current_version ${DYLIB_VERSION} -compatibility_version 1 -allowable_client ld"
+   )
+ 
+ if(LINKER_SUPPORTS_NO_INITS)
+@@ -34,6 +34,3 @@
+     LINK_FLAGS " -Wl,-no_inits"
+     )
+ endif()
+-
+-endif()
+-
+--- tools/libtapi/libtapi.exports	Fri Feb 17 13:58:47 2023
++++ tools/libtapi/libtapi.exports	Wed Oct  6 06:39:00 2021
+@@ -1,4 +1,38 @@
+ _ZN4tapi10APIVersion*
+ _ZN4tapi7Version*
+-_ZN4tapi2v1*
+-_ZNK4tapi2v1*
++_ZN4tapi2v119LinkerInterfaceFile11isSupportedERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEPKhm
++_ZN4tapi2v119LinkerInterfaceFile13areEquivalentERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEESA_
++_ZN4tapi2v119LinkerInterfaceFile26getSupportedFileExtensionsEv
++_ZN4tapi2v119LinkerInterfaceFile29shouldPreferTextBasedStubFileERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE
++_ZN4tapi2v119LinkerInterfaceFile6createERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEPKhmiiNS0_12ParsingFlagsENS0_15PackedVersion32ERS8_
++_ZN4tapi2v119LinkerInterfaceFile6createERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEPKhmiiNS0_18CpuSubTypeMatchingENS0_15PackedVersion32ERS8_
++_ZN4tapi2v119LinkerInterfaceFile6createERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEiiNS0_12ParsingFlagsENS0_15PackedVersion32ERS8_
++_ZN4tapi2v119LinkerInterfaceFileC1EOS1_
++_ZN4tapi2v119LinkerInterfaceFileC1Ev
++_ZN4tapi2v119LinkerInterfaceFileC2EOS1_
++_ZN4tapi2v119LinkerInterfaceFileC2Ev
++_ZN4tapi2v119LinkerInterfaceFileD1Ev
++_ZN4tapi2v119LinkerInterfaceFileD2Ev
++_ZN4tapi2v119LinkerInterfaceFileaSEOS1_
++_ZNK4tapi2v119LinkerInterfaceFile10undefinedsEv
++_ZNK4tapi2v119LinkerInterfaceFile11getFileTypeEv
++_ZNK4tapi2v119LinkerInterfaceFile11getPlatformEv
++_ZNK4tapi2v119LinkerInterfaceFile13ignoreExportsEv
++_ZNK4tapi2v119LinkerInterfaceFile14getInstallNameEv
++_ZNK4tapi2v119LinkerInterfaceFile14getPlatformSetEv
++_ZNK4tapi2v119LinkerInterfaceFile15getSwiftVersionEv
++_ZNK4tapi2v119LinkerInterfaceFile16allowableClientsEv
++_ZNK4tapi2v119LinkerInterfaceFile17getCurrentVersionEv
++_ZNK4tapi2v119LinkerInterfaceFile17getObjCConstraintEv
++_ZNK4tapi2v119LinkerInterfaceFile19getInlinedFrameworkERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEiiNS0_12ParsingFlagsENS0_15PackedVersion32ERS8_
++_ZNK4tapi2v119LinkerInterfaceFile19hasAllowableClientsEv
++_ZNK4tapi2v119LinkerInterfaceFile19reexportedLibrariesEv
++_ZNK4tapi2v119LinkerInterfaceFile20hasTwoLevelNamespaceEv
++_ZNK4tapi2v119LinkerInterfaceFile21hasWeakDefinedExportsEv
++_ZNK4tapi2v119LinkerInterfaceFile21inlinedFrameworkNamesEv
++_ZNK4tapi2v119LinkerInterfaceFile22getParentFrameworkNameEv
++_ZNK4tapi2v119LinkerInterfaceFile22hasReexportedLibrariesEv
++_ZNK4tapi2v119LinkerInterfaceFile23getCompatibilityVersionEv
++_ZNK4tapi2v119LinkerInterfaceFile26isApplicationExtensionSafeEv
++_ZNK4tapi2v119LinkerInterfaceFile28isInstallNameVersionSpecificEv
++_ZNK4tapi2v119LinkerInterfaceFile7exportsEv
+--- tools/libtapi/LinkerInterfaceFile.cpp	Fri Feb 17 13:58:47 2023
++++ tools/libtapi/LinkerInterfaceFile.cpp	Wed Oct  6 06:39:00 2021
+@@ -140,7 +140,7 @@
+     }
+ 
+     if (action == "install_name") {
+-      _installName = symbolName.str();
++      _installName = symbolName;
+       _installPathOverride = true;
+       if (_installName == "/System/Library/Frameworks/"
+                           "ApplicationServices.framework/Versions/A/"
+@@ -316,9 +316,9 @@
+     case MachO::PLATFORM_BRIDGEOS:
+       platform = Platform::bridgeOS;
+       break;
+-    //case MachO::PLATFORM_DRIVERKIT:
+-    //  platform = Platform::DriverKit;
+-    //  break;
++    case MachO::PLATFORM_DRIVERKIT:
++      platform = Platform::DriverKit;
++      break;
+     }
+   }
+ 
+@@ -347,8 +347,8 @@
+     return MachO::PLATFORM_TVOSSIMULATOR;
+   case tapi::internal::Platform::bridgeOS:
+     return MachO::PLATFORM_BRIDGEOS;
+-  //case tapi::internal::Platform::DriverKit:
+-  //  return MachO::PLATFORM_DRIVERKIT;
++  case tapi::internal::Platform::DriverKit:
++    return MachO::PLATFORM_DRIVERKIT;
+   }
+ }
+ #pragma clang diagnostic pop
+@@ -387,7 +387,7 @@
+     _platforms.emplace_back(value);
+   }
+   llvm::sort(_platforms);
+-  _installName = interface->getInstallName().str();
++  _installName = interface->getInstallName();
+   _currentVersion = interface->getCurrentVersion();
+   _compatibilityVersion = interface->getCompatibilityVersion();
+   _hasTwoLevelNamespace = interface->isTwoLevelNamespace();
+--- tools/libtapi/Version.cpp	Fri Feb 17 13:58:47 2023
++++ tools/libtapi/Version.cpp	Wed Oct  6 06:39:00 2021
+--- tools/tapi/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/tapi/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- tools/tapi/tapi.cpp	Fri Feb 17 13:58:47 2023
++++ tools/tapi/tapi.cpp	Wed Oct  6 06:39:00 2021
+--- tools/tapi/tapi.exports	Fri Feb 17 13:58:47 2023
++++ tools/tapi/tapi.exports	Wed Oct  6 06:39:00 2021
+--- tools/tapi-api-verifier/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/tapi-api-verifier/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- tools/tapi-api-verifier/tapi-api-verifier.cpp	Fri Feb 17 13:58:47 2023
++++ tools/tapi-api-verifier/tapi-api-verifier.cpp	Wed Oct  6 06:39:00 2021
+--- tools/tapi-api-verifier/tapi-api-verifier.exports	Fri Feb 17 13:58:47 2023
++++ tools/tapi-api-verifier/tapi-api-verifier.exports	Wed Oct  6 06:39:00 2021
+--- tools/tapi-binary-reader/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/tapi-binary-reader/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- tools/tapi-binary-reader/tapi-binary-reader.cpp	Fri Feb 17 13:58:47 2023
++++ tools/tapi-binary-reader/tapi-binary-reader.cpp	Wed Oct  6 06:39:00 2021
+--- tools/tapi-binary-reader/tapi-binary-reader.exports	Fri Feb 17 13:58:47 2023
++++ tools/tapi-binary-reader/tapi-binary-reader.exports	Wed Oct  6 06:39:00 2021
+--- tools/tapi-frontend/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/tapi-frontend/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- tools/tapi-frontend/tapi-frontend.cpp	Fri Feb 17 13:58:47 2023
++++ tools/tapi-frontend/tapi-frontend.cpp	Wed Oct  6 06:39:00 2021
+--- tools/tapi-frontend/tapi-frontend.exports	Fri Feb 17 13:58:47 2023
++++ tools/tapi-frontend/tapi-frontend.exports	Wed Oct  6 06:39:00 2021
+--- tools/tapi-import/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/tapi-import/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- tools/tapi-import/tapi-import.cpp	Fri Feb 17 13:58:47 2023
++++ tools/tapi-import/tapi-import.cpp	Wed Oct  6 06:39:00 2021
+--- tools/tapi-import/tapi-import.exports	Fri Feb 17 13:58:47 2023
++++ tools/tapi-import/tapi-import.exports	Wed Oct  6 06:39:00 2021
+--- tools/tapi-run/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/tapi-run/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+--- tools/tapi-run/tapi-run.cpp	Fri Feb 17 13:58:47 2023
++++ tools/tapi-run/tapi-run.cpp	Wed Oct  6 06:39:00 2021
+@@ -73,7 +73,6 @@
+                         .Case("armv7s", MachO::CPU_SUBTYPE_ARM_V7S)
+                         .Case("armv7k", MachO::CPU_SUBTYPE_ARM_V7K)
+                         .Case("arm64", MachO::CPU_SUBTYPE_ARM64_ALL)
+-                        .Case("arm64e", MachO::CPU_SUBTYPE_ARM64E)
+                         .Case("i386", MachO::CPU_SUBTYPE_I386_ALL)
+                         .Case("x86_64", MachO::CPU_SUBTYPE_X86_64_ALL)
+                         .Case("x86_64h", MachO::CPU_SUBTYPE_X86_64_H)
+@@ -254,4 +253,4 @@
+   return 0;
+ }
+ 
+-#pragma clang diagnostic pop
++#pragma clang diagnostic pop
+\ No newline at end of file
+--- tools/tapi-run/tapi-run.exports	Fri Feb 17 13:58:47 2023
++++ tools/tapi-run/tapi-run.exports	Wed Oct  6 06:39:00 2021
+--- tools/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -1,7 +1,7 @@
+ add_subdirectory(libtapi)
+-#add_subdirectory(tapi)
+-#add_subdirectory(tapi-api-verifier)
+-#add_subdirectory(tapi-binary-reader)
+-#add_subdirectory(tapi-frontend)
+-#add_subdirectory(tapi-import)
+-#add_subdirectory(tapi-run)
++add_subdirectory(tapi)
++add_subdirectory(tapi-api-verifier)
++add_subdirectory(tapi-binary-reader)
++add_subdirectory(tapi-frontend)
++add_subdirectory(tapi-import)
++add_subdirectory(tapi-run)
+--- tools/libtapi/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/libtapi/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -1,3 +1,4 @@
++set(LLVM_EXPORTED_SYMBOL_FILE ${CMAKE_CURRENT_SOURCE_DIR}/libtapi.exports)
+ set(LLVM_LINK_COMPONENTS
+   Support
+   )
+@@ -11,6 +12,7 @@
+ 
+   LINK_LIBS
+   tapiCore
++  tapiNoInits
+ 
+   NO_INSTALL_RPATH
+   )
+@@ -20,12 +22,10 @@
+   OUTPUT_NAME "tapi"
+   )
+ 
+-if(APPLE)
+-
+ set(DYLIB_VERSION "${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}")
+ set_property(TARGET libtapi APPEND_STRING
+   PROPERTY
+-  LINK_FLAGS " -current_version ${DYLIB_VERSION} -compatibility_version 1 " #-allowable_client ld"
++  LINK_FLAGS " -current_version ${DYLIB_VERSION} -compatibility_version 1 -allowable_client ld"
+   )
+ 
+ if(LINKER_SUPPORTS_NO_INITS)
+@@ -34,6 +34,3 @@
+     LINK_FLAGS " -Wl,-no_inits"
+     )
+ endif()
+-
+-endif()
+-
+--- tools/libtapi/libtapi.exports	Fri Feb 17 13:58:47 2023
++++ tools/libtapi/libtapi.exports	Wed Oct  6 06:39:00 2021
+@@ -1,4 +1,38 @@
+ _ZN4tapi10APIVersion*
+ _ZN4tapi7Version*
+-_ZN4tapi2v1*
+-_ZNK4tapi2v1*
++_ZN4tapi2v119LinkerInterfaceFile11isSupportedERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEPKhm
++_ZN4tapi2v119LinkerInterfaceFile13areEquivalentERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEESA_
++_ZN4tapi2v119LinkerInterfaceFile26getSupportedFileExtensionsEv
++_ZN4tapi2v119LinkerInterfaceFile29shouldPreferTextBasedStubFileERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE
++_ZN4tapi2v119LinkerInterfaceFile6createERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEPKhmiiNS0_12ParsingFlagsENS0_15PackedVersion32ERS8_
++_ZN4tapi2v119LinkerInterfaceFile6createERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEPKhmiiNS0_18CpuSubTypeMatchingENS0_15PackedVersion32ERS8_
++_ZN4tapi2v119LinkerInterfaceFile6createERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEiiNS0_12ParsingFlagsENS0_15PackedVersion32ERS8_
++_ZN4tapi2v119LinkerInterfaceFileC1EOS1_
++_ZN4tapi2v119LinkerInterfaceFileC1Ev
++_ZN4tapi2v119LinkerInterfaceFileC2EOS1_
++_ZN4tapi2v119LinkerInterfaceFileC2Ev
++_ZN4tapi2v119LinkerInterfaceFileD1Ev
++_ZN4tapi2v119LinkerInterfaceFileD2Ev
++_ZN4tapi2v119LinkerInterfaceFileaSEOS1_
++_ZNK4tapi2v119LinkerInterfaceFile10undefinedsEv
++_ZNK4tapi2v119LinkerInterfaceFile11getFileTypeEv
++_ZNK4tapi2v119LinkerInterfaceFile11getPlatformEv
++_ZNK4tapi2v119LinkerInterfaceFile13ignoreExportsEv
++_ZNK4tapi2v119LinkerInterfaceFile14getInstallNameEv
++_ZNK4tapi2v119LinkerInterfaceFile14getPlatformSetEv
++_ZNK4tapi2v119LinkerInterfaceFile15getSwiftVersionEv
++_ZNK4tapi2v119LinkerInterfaceFile16allowableClientsEv
++_ZNK4tapi2v119LinkerInterfaceFile17getCurrentVersionEv
++_ZNK4tapi2v119LinkerInterfaceFile17getObjCConstraintEv
++_ZNK4tapi2v119LinkerInterfaceFile19getInlinedFrameworkERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEiiNS0_12ParsingFlagsENS0_15PackedVersion32ERS8_
++_ZNK4tapi2v119LinkerInterfaceFile19hasAllowableClientsEv
++_ZNK4tapi2v119LinkerInterfaceFile19reexportedLibrariesEv
++_ZNK4tapi2v119LinkerInterfaceFile20hasTwoLevelNamespaceEv
++_ZNK4tapi2v119LinkerInterfaceFile21hasWeakDefinedExportsEv
++_ZNK4tapi2v119LinkerInterfaceFile21inlinedFrameworkNamesEv
++_ZNK4tapi2v119LinkerInterfaceFile22getParentFrameworkNameEv
++_ZNK4tapi2v119LinkerInterfaceFile22hasReexportedLibrariesEv
++_ZNK4tapi2v119LinkerInterfaceFile23getCompatibilityVersionEv
++_ZNK4tapi2v119LinkerInterfaceFile26isApplicationExtensionSafeEv
++_ZNK4tapi2v119LinkerInterfaceFile28isInstallNameVersionSpecificEv
++_ZNK4tapi2v119LinkerInterfaceFile7exportsEv
+--- tools/libtapi/LinkerInterfaceFile.cpp	Fri Feb 17 13:58:47 2023
++++ tools/libtapi/LinkerInterfaceFile.cpp	Wed Oct  6 06:39:00 2021
+@@ -140,7 +140,7 @@
+     }
+ 
+     if (action == "install_name") {
+-      _installName = symbolName.str();
++      _installName = symbolName;
+       _installPathOverride = true;
+       if (_installName == "/System/Library/Frameworks/"
+                           "ApplicationServices.framework/Versions/A/"
+@@ -316,9 +316,9 @@
+     case MachO::PLATFORM_BRIDGEOS:
+       platform = Platform::bridgeOS;
+       break;
+-    //case MachO::PLATFORM_DRIVERKIT:
+-    //  platform = Platform::DriverKit;
+-    //  break;
++    case MachO::PLATFORM_DRIVERKIT:
++      platform = Platform::DriverKit;
++      break;
+     }
+   }
+ 
+@@ -347,8 +347,8 @@
+     return MachO::PLATFORM_TVOSSIMULATOR;
+   case tapi::internal::Platform::bridgeOS:
+     return MachO::PLATFORM_BRIDGEOS;
+-  //case tapi::internal::Platform::DriverKit:
+-  //  return MachO::PLATFORM_DRIVERKIT;
++  case tapi::internal::Platform::DriverKit:
++    return MachO::PLATFORM_DRIVERKIT;
+   }
+ }
+ #pragma clang diagnostic pop
+@@ -387,7 +387,7 @@
+     _platforms.emplace_back(value);
+   }
+   llvm::sort(_platforms);
+-  _installName = interface->getInstallName().str();
++  _installName = interface->getInstallName();
+   _currentVersion = interface->getCurrentVersion();
+   _compatibilityVersion = interface->getCompatibilityVersion();
+   _hasTwoLevelNamespace = interface->isTwoLevelNamespace();
+--- tools/CMakeLists.txt	Fri Feb 17 13:58:47 2023
++++ tools/CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -1,7 +1,7 @@
+ add_subdirectory(libtapi)
+-#add_subdirectory(tapi)
+-#add_subdirectory(tapi-api-verifier)
+-#add_subdirectory(tapi-binary-reader)
+-#add_subdirectory(tapi-frontend)
+-#add_subdirectory(tapi-import)
+-#add_subdirectory(tapi-run)
++add_subdirectory(tapi)
++add_subdirectory(tapi-api-verifier)
++add_subdirectory(tapi-binary-reader)
++add_subdirectory(tapi-frontend)
++add_subdirectory(tapi-import)
++add_subdirectory(tapi-run)
+--- CMakeLists.txt	Fri Feb 17 13:58:46 2023
++++ CMakeLists.txt	Wed Oct  6 06:39:00 2021
+@@ -1,130 +1,7 @@
+-#if(NOT APPLE)
+-#  message(FATAL_ERROR "Unsupported configuration.")
+-#endif()
+-
+-cmake_minimum_required(VERSION 3.13.4)
+-
+-if(NOT DEFINED LLVM_COMMON_CMAKE_UTILS)
+-  set(LLVM_COMMON_CMAKE_UTILS ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
+-endif()
+-# include(${LLVM_COMMON_CMAKE_UTILS}/Modules/CMakePolicy.cmake
+-#  NO_POLICY_SCOPE)
+-
+-# If we are not building as a part of LLVM, build liptapi as an
+-# standalone project, using LLVM as an external library:
+-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+-  project(libtapi)
+-  set(LIBTAPI_BUILT_STANDALONE TRUE)
+-  if ("${CMAKE_VERSION}" VERSION_LESS "3.20.0")
+-    message(WARNING
+-      "Your CMake version is ${CMAKE_VERSION}. Starting with LLVM 17.0.0, the "
+-      "minimum version of CMake required to build LLVM will become 3.20.0, and "
+-      "using an older CMake will become an error. Please upgrade your CMake to "
+-      "at least 3.20.0 now to avoid issues in the future!")
+-  endif()
++if(NOT APPLE)
++  message(FATAL_ERROR "Unsupported configuration.")
+ endif()
+ 
+-# Must go below project(..)
+-include(GNUInstallDirs)
+-
+-if(LIBTAPI_BUILT_STANDALONE)
+-  set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to conform to")
+-  set(CMAKE_CXX_STANDARD_REQUIRED YES)
+-
+-  if (CYGWIN)
+-    # Cygwin is a bit stricter and lack things like 'strdup', 'stricmp', etc in
+-    # c++xx mode.
+-    set(CMAKE_CXX_EXTENSIONS YES)
+-  else()
+-  set(CMAKE_CXX_EXTENSIONS NO)
+-  endif()
+-
+-  if(NOT MSVC_IDE)
+-    set(LLVM_ENABLE_ASSERTIONS ${ENABLE_ASSERTIONS}
+-      CACHE BOOL "Enable assertions")
+-    # Assertions should follow llvm-config's.
+-    mark_as_advanced(LLVM_ENABLE_ASSERTIONS)
+-  endif()
+-
+-  # If the user specifies a relative path to LLVM_DIR, the calls to include
+-  # LLVM modules fail. Append the absolute path to LLVM_DIR instead.
+-  # get_filename_component(LLVM_DIR_ABSOLUTE ${LLVM_DIR} REALPATH)
+-  # cmake_path(GET LLVM_DIR ROOT_PATH LLVM_DIR_ABSOLUTE)
+-  cmake_path(ABSOLUTE_PATH LLVM_ROOT NORMALIZE)
+-  message("-- LLVM_ROOT ${LLVM_ROOT}")
+-  list(APPEND CMAKE_MODULE_PATH "${LLVM_ROOT}")  
+-  list(APPEND CMAKE_MODULE_PATH "${LLVM_ROOT}/lib/cmake/llvm")
+-  # set( CMAKE_FIND_ROOT_PATH ${CMAKE_MODULE_PATH} )
+-  find_package(LLVM REQUIRED HINTS "${LLVM_CMAKE_DIR}")
+-
+-  # Turn into CACHE PATHs for overwritting
+-  set(LLVM_INCLUDE_DIRS "${LLVM_INCLUDE_DIRS}" CACHE PATH "Path to llvm/include and any other header dirs needed")
+-  set(LLVM_BINARY_DIR "${LLVM_BINARY_DIR}" CACHE PATH "Path to LLVM build tree")
+-  set(LLVM_MAIN_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../llvm" CACHE PATH "Path to LLVM source tree")
+-  set(LLVM_TOOLS_BINARY_DIR "${LLVM_TOOLS_BINARY_DIR}" CACHE PATH "Path to llvm/bin")
+-  set(LLVM_LIBRARY_DIR "${LLVM_LIBRARY_DIR}" CACHE PATH "Path to llvm/lib")
+-
+-  find_program(LLVM_TABLEGEN_EXE "llvm-tblgen" ${LLVM_TOOLS_BINARY_DIR}
+-    NO_DEFAULT_PATH)
+-
+-  # They are used as destination of target generators.
+-  set(LLVM_RUNTIME_OUTPUT_INTDIR ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/bin)
+-  set(LLVM_LIBRARY_OUTPUT_INTDIR ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/lib${LLVM_LIBDIR_SUFFIX})
+-  if(WIN32 OR CYGWIN)
+-    # DLL platform -- put DLLs into bin.
+-    set(LLVM_SHLIB_OUTPUT_INTDIR ${LLVM_RUNTIME_OUTPUT_INTDIR})
+-  else()
+-    set(LLVM_SHLIB_OUTPUT_INTDIR ${LLVM_LIBRARY_OUTPUT_INTDIR})
+-  endif()
+-
+-  option(LLVM_INSTALL_TOOLCHAIN_ONLY
+-    "Only include toolchain files in the 'install' target." OFF)
+-
+-  option(LLVM_FORCE_USE_OLD_HOST_TOOLCHAIN
+-    "Set to ON to force using an old, unsupported host toolchain." OFF)
+-
+-  include(AddLLVM)
+-  include(TableGen)
+-  include(HandleLLVMOptions)
+-  include(VersionFromVCS)
+-  include(CheckAtomic)
+-  include(GetErrcMessages)
+-  include(LLVMDistributionSupport)
+-
+-  set(PACKAGE_VERSION "${LLVM_PACKAGE_VERSION}")
+-  set(BUG_REPORT_URL "${LLVM_PACKAGE_BUGREPORT}" CACHE STRING
+-    "Default URL where bug reports are to be submitted.")
+-
+-  include_directories(${LLVM_INCLUDE_DIRS})
+-  link_directories("${LLVM_LIBRARY_DIR}")
+-
+-  set( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
+-  set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib${LLVM_LIBDIR_SUFFIX} )
+-  set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib${LLVM_LIBDIR_SUFFIX} )
+-
+-  # Users might specify a path to CLANG_DIR that's:
+-  #   * a full path, or
+-  #   * a path relative to the path of this script.
+-  # Append the absolute path to CLANG_DIR so that find_package works in both
+-  # cases.
+-  cmake_path(ABSOLUTE_PATH CLANG_ROOT NORMALIZE)
+-  message("-- CLANG_ROOT ${CLANG_ROOT}")
+-  list(APPEND CMAKE_MODULE_PATH "${CLANG_ROOT}")
+-  list(APPEND CMAKE_MODULE_PATH "${CLANG_ROOT}/lib/cmake/clang")
+-  # set( CMAKE_FIND_ROOT_PATH ${CMAKE_MODULE_PATH} )
+-  # find_package(Clang REQUIRED CONFIG)
+-  # if (NOT Clang_FOUND)
+-#    message(FATAL_ERROR "Failed to find Clang")
+-#  endif()
+-
+-#  include(AddClang)
+-
+- # include_directories(${CLANG_INCLUDE_DIRS})
+-endif() # standalone
+-
+-include(CheckLinkerFlag)
+-include(CheckCCompilerFlag)
+-
+ set(TAPI_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+ set(TAPI_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+ 
+@@ -161,11 +38,11 @@
+ if(DEFINED ENV{RC_SUPPORTED_ARCHS})
+   string(REPLACE " " ";" TAPI_SUPPORTED_ARCHS $ENV{RC_SUPPORTED_ARCHS})
+ elseif(NOT DEFINED TAPI_SUPPORTED_ARCHS)
+-  set(TAPI_SUPPORTED_ARCHS i386 x86_64 x86_64h armv4t armv6 armv5 armv7 armv7s armv7k armv6m armv7m armv7em arm64 arm64e)
++  set(TAPI_SUPPORTED_ARCHS i386 x86_64 x86_64h armv4t armv6 armv5 armv7 armv7s armv7k armv6m armv7m armv7em arm64)
+ endif()
+ message(STATUS "Supported Architectures: ${TAPI_SUPPORTED_ARCHS}")
+ 
+-set(KNOWN_ARCHS i386 x86_64 x86_64h armv4t armv6 armv5 armv7 armv7s armv7k armv6m armv7m armv7em arm64 arm64e)
++set(KNOWN_ARCHS i386 x86_64 x86_64h armv4t armv6 armv5 armv7 armv7s armv7k armv6m armv7m armv7em arm64)
+ 
+ set (CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/include/tapi/Core/ArchitectureConfig.h)
+ file(WRITE ${CONFIG_FILE} "#ifndef TAPI_CORE_ARCHITECTURE_CONFIG_H\n")
+@@ -188,12 +65,12 @@
+   ${CMAKE_CURRENT_BINARY_DIR}/include/tapi/Version.inc)
+ 
+ # Check if the linker support -no_inits.
+-check_linker_flag(CXX "-Wl,-no_inits" LINKER_SUPPORTS_NO_INITS)
++check_linker_flag("-Wl,-no_inits" LINKER_SUPPORTS_NO_INITS)
+ 
+ # MARZIPAN RENAME: We might need to update this. This will also require an
+ # update of the linker on the CI bots.
+ # Check if the linker has iosmac support.
+-check_linker_flag(CXX "-Wl,-iosmac_version_min,12.0" LINKER_SUPPORTS_IOSMAC)
++check_linker_flag("-Wl,-iosmac_version_min,12.0" LINKER_SUPPORTS_IOSMAC)
+ # MARZIPAN RENAME
+ 
+ # Check if i386 is supported.
+@@ -285,23 +162,22 @@
+   set_target_properties(${name} PROPERTIES FOLDER "Tapi executables")
+ endmacro(add_tapi_executable)
+ 
+-# TODO: Remove when libclangDriver is lifted out of Clang
+-if(LIBTAPI_STANDALONE_BUILD)
+-  set(CLANG_INCLUDE_DIR ${CLANG_INCLUDE_DIRS} )
+-  # No need to specify TableGen output dir as that's embedded in CLANG_DIR
+-else()
+-  set(CLANG_INCLUDE_DIR ${LLVM_MAIN_SRC_DIR}/../clang/include )
+-  # Specify TableGen output dir for things like DiagnosticCommonKinds.inc,
+-  # DiagnosticDriverKinds.inc (required for reporting diagnostics)
+-  set(CLANG_TABLEGEN_OUTPUT_DIR ${CMAKE_BINARY_DIR}/tools/clang/include)
+-  include_directories(SYSTEM ${CLANG_TABLEGEN_OUTPUT_DIR})
+-endif()
+-include_directories(SYSTEM ${CLANG_INCLUDE_DIR})
++function(tapi_clang_tablegen)
++  cmake_parse_arguments(CTG "" "SOURCE;TARGET" "" ${ARGN})
+ 
+-if(LIBTAPI_STANDALONE_BUILD)
+-  set(LLVM_RUNTIME_OUTPUT_INTDIR ${CMAKE_BINARY_DIR}/bin)
+-  set(LLVM_LIBRARY_OUTPUT_INTDIR ${CMAKE_BINARY_DIR}/lib)
+-endif()
++  if( NOT CTG_SOURCE )
++    message(FATAL_ERROR "SOURCE source-file required by clang_tablegen")
++  endif()
++
++  set( LLVM_TARGET_DEFINITIONS ${CTG_SOURCE} )
++  tablegen(CLANG ${CTG_UNPARSED_ARGUMENTS})
++
++  if(CTG_TARGET)
++    add_public_tablegen_target(${CTG_TARGET})
++    set_target_properties( ${CTG_TARGET} PROPERTIES FOLDER "Tapi tablegenning")
++    set_property(GLOBAL APPEND PROPERTY TAPI_TABLEGEN_TARGETS ${CTG_TARGET})
++  endif()
++endfunction(tapi_clang_tablegen)
+ 
+ include_directories(BEFORE
+   ${CMAKE_CURRENT_BINARY_DIR}/include
+@@ -316,7 +192,25 @@
+ # Include must go first.
+ add_subdirectory(include)
+ # All targets below may depend on all tablegen'd files.
+-#get_property(TAPI_TABLEGEN_TARGETS GLOBAL PROPERTY TAPI_TABLEGEN_TARGETS)
+-#list(APPEND LLVM_COMMON_DEPENDS ${TAPI_TABLEGEN_TARGETS})
++get_property(TAPI_TABLEGEN_TARGETS GLOBAL PROPERTY TAPI_TABLEGEN_TARGETS)
++list(APPEND LLVM_COMMON_DEPENDS ${TAPI_TABLEGEN_TARGETS})
+ add_subdirectory(lib)
+ add_subdirectory(tools)
++if( TAPI_INCLUDE_TESTS )
++  if(EXISTS ${LLVM_MAIN_SRC_DIR}/utils/unittest/googletest/include/gtest/gtest.h)
++    add_subdirectory(unittests)
++    list(APPEND TAPI_TEST_DEPS TapiUnitTests)
++    list(APPEND TAPI_TEST_PARAMS
++      tapi_unit_site_config=${CMAKE_CURRENT_BINARY_DIR}/test/Unit/lit.site.cfg
++      )
++  endif()
++  if(EXISTS ${TAPI_SOURCE_DIR}/test)
++    add_subdirectory(test)
++  endif()
++  if(EXISTS ${TAPI_SOURCE_DIR}/sdk_tests)
++    add_subdirectory(sdk_tests)
++  endif()
++endif()
++if( TAPI_INCLUDE_DOCS )
++  add_subdirectory(docs)
++endif() 
