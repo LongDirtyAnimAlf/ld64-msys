@@ -184,16 +184,24 @@ bool Options::FileInfo::checkFileExists(const Options& options, const char *p)
 	struct stat statBuffer;
 	if (p == NULL) 
 	  p = path;
-	if ( stat(p, &statBuffer) == 0 ) {
-		if (p != path) path = strdup(p);
+
+	char *strPtr = strdup(p);
+	#if defined(__CYGWIN__)
+	char *q = strPtr;
+	while ((q = strchr(q, '/')) != NULL)
+        *q++ = '\\';
+	#endif
+	strPtr[strcspn(strPtr, "\r\n")] = 0;
+
+	if ( stat(strPtr, &statBuffer) == 0 ) {
+		if (strPtr != path) path = strdup(strPtr);
 		modTime = statBuffer.st_mtime;
 		return true;
 	}
-	options.addDependency(Options::depNotFound, p);
+	options.addDependency(Options::depNotFound, strPtr);
 //	fprintf(stderr, "not found: %s\n", p);
     return false;
 }
-
 
 Options::Options(int argc, const char* argv[])
 	: fOutputFile("a.out"), fArchitecture(0), fSubArchitecture(0),
