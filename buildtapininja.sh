@@ -59,7 +59,7 @@ if [ -z "$INSTALLPREFIX" ]; then
   INSTALLPREFIX=$PWD/target/
 fi
 
-INCLUDE_FIX=""
+INCLUDE_FIX="-fPIC "
 # INCLUDE_FIX="-I $LIBTAPI_SOURCE_DIR/src/llvm/projects/clang/include -I $PWD/projects/clang/include"
 INCLUDE_FIX+="-Wno-error=implicit-fallthrough "
 INCLUDE_FIX+="-Wno-error=unused-function "
@@ -75,7 +75,8 @@ INCLUDE_FIX+="-Wno-unused-variable "
 INCLUDE_FIX+="-Wno-deprecated-declarations "
 INCLUDE_FIX+="-Wno-cast-function-type "
 INCLUDE_FIX+="-Wno-free-nonheap-object "
-INCLUDE_FIX+="-Wno-stringop-overflow "
+# INCLUDE_FIX+="-Wno-stringop-overflow "
+INCLUDE_FIX+="-Wno-ignored-attributes "
 INCLUDE_FIX+="-Wno-nonnull"
 
 echo -n $INSTALLPREFIX > INSTALLPREFIX

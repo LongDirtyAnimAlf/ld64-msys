@@ -9,7 +9,8 @@ echo ""
 echo "## Building wrappers ##"
 echo ""
 
-FPC=/home/superdad/fpcupdeluxe/stable/up/fpc/bin/x86_64-linux/fpc.sh
+# FPC=/home/superdad/fpcupdeluxe/stable/up/fpc/bin/x86_64-linux/fpc.sh
+FPC=/home/superdad/Desktop/deluxe/trunk/fpc/bin/x86_64-linux/fpc.sh
 
 TARGET=clang
 $FPC -damd64_darwin -dCLANG -o./fpc-wrappers/x86_64-apple-darwin19-$TARGET -FU./fpc-wrappers/lib wrapper.lpr
@@ -32,6 +33,12 @@ $FPC -di386_darwin -dDSYMUTIL -o./fpc-wrappers/i386-apple-darwin19-$TARGET -FU./
 $FPC -darm64_ios -dDSYMUTIL -o./fpc-wrappers/aarch64-apple-ios14-$TARGET -FU./fpc-wrappers/lib wrapper.lpr
 $FPC -darm_ios -dDSYMUTIL -o./fpc-wrappers/arm-apple-ios10-$TARGET -FU./fpc-wrappers/lib wrapper.lpr
 
+TARGET=strip
+$FPC -damd64_darwin -dSTRIP -o./fpc-wrappers/x86_64-apple-darwin19-$TARGET -FU./fpc-wrappers/lib wrapper.lpr
+$FPC -darm64_darwin -dSTRIP -o./fpc-wrappers/aarch64-apple-darwin19-$TARGET -FU./fpc-wrappers/lib wrapper.lpr
+$FPC -di386_darwin -dSTRIP -o./fpc-wrappers/i386-apple-darwin19-$TARGET -FU./fpc-wrappers/lib wrapper.lpr
+$FPC -darm64_ios -dSTRIP -o./fpc-wrappers/aarch64-apple-ios14-$TARGET -FU./fpc-wrappers/lib wrapper.lpr
+$FPC -darm_ios -dSTRIP -o./fpc-wrappers/arm-apple-ios10-$TARGET -FU./fpc-wrappers/lib wrapper.lpr
 
 echo CLANG
 echo DSYMUTIL
